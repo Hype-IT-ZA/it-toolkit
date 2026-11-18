@@ -1,0 +1,507 @@
+{
+  "apps": [
+    {
+      "name": "Google Chrome",
+      "id": "Google.Chrome",
+      "category": "Browsers",
+      "description": "Google's web browser"
+    },
+    {
+      "name": "Mozilla Firefox",
+      "id": "Mozilla.Firefox",
+      "category": "Browsers",
+      "description": "Open-source web browser"
+    },
+    {
+      "name": "Brave",
+      "id": "Brave.Brave",
+      "category": "Browsers",
+      "description": "Privacy-focused browser with ad blocking"
+    },
+    {
+      "name": "Opera",
+      "id": "Opera.Opera",
+      "category": "Browsers",
+      "description": "Browser with built-in VPN"
+    },
+    {
+      "name": "Vivaldi",
+      "id": "Vivaldi.Vivaldi",
+      "category": "Browsers",
+      "description": "Highly customisable browser"
+    },
+    {
+      "name": "Zoom",
+      "id": "Zoom.Zoom",
+      "category": "Communication",
+      "description": "Video meetings"
+    },
+    {
+      "name": "Microsoft Teams",
+      "id": "Microsoft.Teams",
+      "category": "Communication",
+      "description": "Chat and meetings for work"
+    },
+    {
+      "name": "Slack",
+      "id": "SlackTechnologies.Slack",
+      "category": "Communication",
+      "description": "Team chat"
+    },
+    {
+      "name": "Discord",
+      "id": "Discord.Discord",
+      "category": "Communication",
+      "description": "Voice and text chat"
+    },
+    {
+      "name": "Telegram",
+      "id": "Telegram.TelegramDesktop",
+      "category": "Communication",
+      "description": "Messaging app"
+    },
+    {
+      "name": "Thunderbird",
+      "id": "Mozilla.Thunderbird",
+      "category": "Communication",
+      "description": "Email client"
+    },
+    {
+      "name": "AnyDesk",
+      "id": "AnyDesk.AnyDesk",
+      "category": "Remote support",
+      "description": "Remote desktop"
+    },
+    {
+      "name": "TeamViewer",
+      "id": "TeamViewer.TeamViewer",
+      "category": "Remote support",
+      "description": "Remote desktop"
+    },
+    {
+      "name": "RustDesk",
+      "id": "RustDesk.RustDesk",
+      "category": "Remote support",
+      "description": "Open-source remote desktop"
+    },
+    {
+      "name": "Adobe Acrobat Reader",
+      "id": "Adobe.Acrobat.Reader.64-bit",
+      "category": "Office & PDF",
+      "description": "PDF reader"
+    },
+    {
+      "name": "Foxit PDF Reader",
+      "id": "Foxit.FoxitReader",
+      "category": "Office & PDF",
+      "description": "Lightweight PDF reader"
+    },
+    {
+      "name": "SumatraPDF",
+      "id": "SumatraPDF.SumatraPDF",
+      "category": "Office & PDF",
+      "description": "Tiny, fast PDF and e-book reader"
+    },
+    {
+      "name": "LibreOffice",
+      "id": "TheDocumentFoundation.LibreOffice",
+      "category": "Office & PDF",
+      "description": "Free office suite"
+    },
+    {
+      "name": "ONLYOFFICE",
+      "id": "ONLYOFFICE.DesktopEditors",
+      "category": "Office & PDF",
+      "description": "Office suite compatible with Microsoft formats"
+    },
+    {
+      "name": "Notepad++",
+      "id": "Notepad++.Notepad++",
+      "category": "Office & PDF",
+      "description": "Text and code editor"
+    },
+    {
+      "name": "7-Zip",
+      "id": "7zip.7zip",
+      "category": "Utilities",
+      "description": "Archive manager (zip, 7z, rar)"
+    },
+    {
+      "name": "WinRAR",
+      "id": "RARLab.WinRAR",
+      "category": "Utilities",
+      "description": "Archive manager"
+    },
+    {
+      "name": "PowerToys",
+      "id": "Microsoft.PowerToys",
+      "category": "Utilities",
+      "description": "Microsoft power-user utilities"
+    },
+    {
+      "name": "Everything",
+      "id": "voidtools.Everything",
+      "category": "Utilities",
+      "description": "Instant file name search"
+    },
+    {
+      "name": "WizTree",
+      "id": "AntibodySoftware.WizTree",
+      "category": "Utilities",
+      "description": "Fast disk space analyser"
+    },
+    {
+      "name": "WinDirStat",
+      "id": "WinDirStat.WinDirStat",
+      "category": "Utilities",
+      "description": "Disk usage viewer"
+    },
+    {
+      "name": "ShareX",
+      "id": "ShareX.ShareX",
+      "category": "Utilities",
+      "description": "Screenshots and screen recording"
+    },
+    {
+      "name": "Greenshot",
+      "id": "Greenshot.Greenshot",
+      "category": "Utilities",
+      "description": "Simple screenshot tool"
+    },
+    {
+      "name": "Windows Terminal",
+      "id": "Microsoft.WindowsTerminal",
+      "category": "Utilities",
+      "description": "Modern terminal"
+    },
+    {
+      "name": "PowerShell 7",
+      "id": "Microsoft.PowerShell",
+      "category": "Utilities",
+      "description": "Latest PowerShell"
+    },
+    {
+      "name": "Rufus",
+      "id": "Rufus.Rufus",
+      "category": "Utilities",
+      "description": "Create bootable USB drives"
+    },
+    {
+      "name": "Ventoy",
+      "id": "Ventoy.Ventoy",
+      "category": "Utilities",
+      "description": "Multi-ISO bootable USB"
+    },
+    {
+      "name": "balenaEtcher",
+      "id": "Balena.Etcher",
+      "category": "Utilities",
+      "description": "Flash images to USB and SD cards"
+    },
+    {
+      "name": "KeePassXC",
+      "id": "KeePassXC.KeePassXC",
+      "category": "Utilities",
+      "description": "Offline password manager"
+    },
+    {
+      "name": "Bitwarden",
+      "id": "Bitwarden.Bitwarden",
+      "category": "Utilities",
+      "description": "Password manager"
+    },
+    {
+      "name": "CPU-Z",
+      "id": "CPUID.CPU-Z",
+      "category": "Hardware & diagnostics",
+      "description": "CPU, RAM and motherboard info"
+    },
+    {
+      "name": "HWMonitor",
+      "id": "CPUID.HWMonitor",
+      "category": "Hardware & diagnostics",
+      "description": "Temperatures, voltages and fans"
+    },
+    {
+      "name": "GPU-Z",
+      "id": "TechPowerUp.GPU-Z",
+      "category": "Hardware & diagnostics",
+      "description": "Graphics card info"
+    },
+    {
+      "name": "CrystalDiskInfo",
+      "id": "CrystalDewWorld.CrystalDiskInfo",
+      "category": "Hardware & diagnostics",
+      "description": "Disk SMART health"
+    },
+    {
+      "name": "CrystalDiskMark",
+      "id": "CrystalDewWorld.CrystalDiskMark",
+      "category": "Hardware & diagnostics",
+      "description": "Disk speed benchmark"
+    },
+    {
+      "name": "HWiNFO",
+      "id": "REALiX.HWiNFO",
+      "category": "Hardware & diagnostics",
+      "description": "Detailed hardware info and sensors"
+    },
+    {
+      "name": "Process Explorer",
+      "id": "Microsoft.Sysinternals.ProcessExplorer",
+      "category": "Hardware & diagnostics",
+      "description": "Advanced Task Manager"
+    },
+    {
+      "name": "Autoruns",
+      "id": "Microsoft.Sysinternals.Autoruns",
+      "category": "Hardware & diagnostics",
+      "description": "Everything that starts with Windows"
+    },
+    {
+      "name": "Advanced IP Scanner",
+      "id": "Famatech.AdvancedIPScanner",
+      "category": "Network",
+      "description": "Find devices on the network"
+    },
+    {
+      "name": "Angry IP Scanner",
+      "id": "angryziber.AngryIPScanner",
+      "category": "Network",
+      "description": "Fast network scanner"
+    },
+    {
+      "name": "PuTTY",
+      "id": "PuTTY.PuTTY",
+      "category": "Network",
+      "description": "SSH and serial terminal"
+    },
+    {
+      "name": "WinSCP",
+      "id": "WinSCP.WinSCP",
+      "category": "Network",
+      "description": "SFTP / FTP client"
+    },
+    {
+      "name": "FileZilla",
+      "id": "TimKosse.FileZilla.Client",
+      "category": "Network",
+      "description": "FTP client"
+    },
+    {
+      "name": "Wireshark",
+      "id": "WiresharkFoundation.Wireshark",
+      "category": "Network",
+      "description": "Packet capture and analysis"
+    },
+    {
+      "name": "Nmap",
+      "id": "Insecure.Nmap",
+      "category": "Network",
+      "description": "Network scanner"
+    },
+    {
+      "name": "WireGuard",
+      "id": "WireGuard.WireGuard",
+      "category": "Network",
+      "description": "VPN client"
+    },
+    {
+      "name": "OpenVPN Connect",
+      "id": "OpenVPNTechnologies.OpenVPNConnect",
+      "category": "Network",
+      "description": "VPN client"
+    },
+    {
+      "name": "VLC media player",
+      "id": "VideoLAN.VLC",
+      "category": "Media",
+      "description": "Plays almost any video or audio"
+    },
+    {
+      "name": "Spotify",
+      "id": "Spotify.Spotify",
+      "category": "Media",
+      "description": "Music streaming"
+    },
+    {
+      "name": "OBS Studio",
+      "id": "OBSProject.OBSStudio",
+      "category": "Media",
+      "description": "Screen recording and streaming"
+    },
+    {
+      "name": "Audacity",
+      "id": "Audacity.Audacity",
+      "category": "Media",
+      "description": "Audio editor"
+    },
+    {
+      "name": "HandBrake",
+      "id": "HandBrake.HandBrake",
+      "category": "Media",
+      "description": "Video converter"
+    },
+    {
+      "name": "GIMP",
+      "id": "GIMP.GIMP",
+      "category": "Media",
+      "description": "Image editor"
+    },
+    {
+      "name": "Paint.NET",
+      "id": "dotPDN.PaintDotNet",
+      "category": "Media",
+      "description": "Simple image editor"
+    },
+    {
+      "name": "IrfanView",
+      "id": "IrfanSkiljan.IrfanView",
+      "category": "Media",
+      "description": "Fast image viewer"
+    },
+    {
+      "name": "Visual Studio Code",
+      "id": "Microsoft.VisualStudioCode",
+      "category": "Development",
+      "description": "Code editor"
+    },
+    {
+      "name": "Git",
+      "id": "Git.Git",
+      "category": "Development",
+      "description": "Version control"
+    },
+    {
+      "name": "GitHub Desktop",
+      "id": "GitHub.GitHubDesktop",
+      "category": "Development",
+      "description": "Git with a GUI"
+    },
+    {
+      "name": "Node.js LTS",
+      "id": "OpenJS.NodeJS.LTS",
+      "category": "Development",
+      "description": "JavaScript runtime"
+    },
+    {
+      "name": "Python 3.12",
+      "id": "Python.Python.3.12",
+      "category": "Development",
+      "description": "Python runtime"
+    },
+    {
+      "name": "Docker Desktop",
+      "id": "Docker.DockerDesktop",
+      "category": "Development",
+      "description": "Containers"
+    },
+    {
+      "name": "Visual C++ 2015-2022 (x64)",
+      "id": "Microsoft.VCRedist.2015+.x64",
+      "category": "Runtimes",
+      "description": "Needed by many apps and games"
+    },
+    {
+      "name": "Visual C++ 2015-2022 (x86)",
+      "id": "Microsoft.VCRedist.2015+.x86",
+      "category": "Runtimes",
+      "description": "Needed by many 32-bit apps"
+    },
+    {
+      "name": ".NET Desktop Runtime 8",
+      "id": "Microsoft.DotNet.DesktopRuntime.8",
+      "category": "Runtimes",
+      "description": "Needed by many Windows apps"
+    },
+    {
+      "name": "Java (Temurin 21 JRE)",
+      "id": "EclipseAdoptium.Temurin.21.JRE",
+      "category": "Runtimes",
+      "description": "Free Java runtime"
+    },
+    {
+      "name": "Malwarebytes",
+      "id": "Malwarebytes.Malwarebytes",
+      "category": "Security",
+      "description": "Malware scanner"
+    },
+    {
+      "name": "Google Drive",
+      "id": "Google.GoogleDrive",
+      "category": "Cloud storage",
+      "description": "Google Drive sync"
+    },
+    {
+      "name": "Dropbox",
+      "id": "Dropbox.Dropbox",
+      "category": "Cloud storage",
+      "description": "Dropbox sync"
+    },
+    {
+      "name": "OneDrive",
+      "id": "Microsoft.OneDrive",
+      "category": "Cloud storage",
+      "description": "Microsoft OneDrive sync"
+    },
+    {
+      "name": "Steam",
+      "id": "Valve.Steam",
+      "category": "Gaming",
+      "description": "PC games store"
+    },
+    {
+      "name": "Epic Games Launcher",
+      "id": "EpicGames.EpicGamesLauncher",
+      "category": "Gaming",
+      "description": "PC games store"
+    },
+    {
+      "name": "GOG Galaxy",
+      "id": "GOG.Galaxy",
+      "category": "Gaming",
+      "description": "PC games store"
+    }
+  ],
+  "presets": {
+    "Basic office PC": [
+      "Google.Chrome",
+      "7zip.7zip",
+      "Adobe.Acrobat.Reader.64-bit",
+      "VideoLAN.VLC",
+      "Zoom.Zoom",
+      "Microsoft.VCRedist.2015+.x64",
+      "Microsoft.DotNet.DesktopRuntime.8"
+    ],
+    "Technician toolkit": [
+      "7zip.7zip",
+      "Notepad++.Notepad++",
+      "voidtools.Everything",
+      "AntibodySoftware.WizTree",
+      "CPUID.CPU-Z",
+      "CPUID.HWMonitor",
+      "CrystalDewWorld.CrystalDiskInfo",
+      "Famatech.AdvancedIPScanner",
+      "Microsoft.Sysinternals.Autoruns",
+      "Microsoft.Sysinternals.ProcessExplorer"
+    ],
+    "Developer": [
+      "Microsoft.VisualStudioCode",
+      "Git.Git",
+      "Microsoft.WindowsTerminal",
+      "Microsoft.PowerShell",
+      "OpenJS.NodeJS.LTS",
+      "Python.Python.3.12",
+      "PuTTY.PuTTY",
+      "WinSCP.WinSCP"
+    ],
+    "Gaming PC": [
+      "Valve.Steam",
+      "EpicGames.EpicGamesLauncher",
+      "Discord.Discord",
+      "Microsoft.VCRedist.2015+.x64",
+      "Microsoft.VCRedist.2015+.x86",
+      "Microsoft.DotNet.DesktopRuntime.8"
+    ]
+  }
+}

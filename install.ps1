@@ -2,18 +2,28 @@
     IT Toolkit - one-line installer and launcher
     https://github.com/Hype-IT-ZA/it-toolkit
 
-    Run in an elevated PowerShell window or a ScreenConnect Backstage PowerShell console:
+    Open the GUI (elevated PowerShell or a ScreenConnect Backstage PowerShell console):
 
         irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex
 
+    Headless (no window) - pass the same options as ITToolkit.ps1:
+
+        & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1))) -Run 'Safe cleanup'
+        & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1))) -HealthCheck
+
     What it does:
       1. Downloads the latest version of the repo from GitHub
-      2. Copies ITToolkit.ps1 and the Tools folder to C:\ProgramData\ITToolkit
-         (your own extra files in the Tools folder are kept)
+      2. Copies it to C:\ProgramData\ITToolkit (your own files in the Tools folder are kept)
       3. Starts the toolkit
-
     Run it again any time to update.
 #>
+param(
+    [string[]]$Run, [string[]]$Install, [string[]]$Uninstall, [string[]]$Tweak, [switch]$Undo,
+    [switch]$HealthCheck, [switch]$Inventory, [switch]$List, [switch]$Force, [hashtable]$Inputs
+)
+$ITK_PassThru = @{}
+foreach ($k in $PSBoundParameters.Keys) { $ITK_PassThru[$k] = $PSBoundParameters[$k] }
+
 & {
     $ErrorActionPreference = 'Stop'
     $ProgressPreference    = 'SilentlyContinue'
@@ -21,6 +31,7 @@
     $Repo   = 'Hype-IT-ZA/it-toolkit'
     $Branch = 'main'
     $Dest   = Join-Path $env:ProgramData 'ITToolkit'
+    $Parts  = 'ITToolkit.ps1', 'version.txt', 'core', 'modules', 'data', 'Tools'
 
     # Older Windows builds default to TLS 1.0 - GitHub needs TLS 1.2
     try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch {}
@@ -36,11 +47,20 @@
         Invoke-WebRequest -Uri "https://github.com/$Repo/archive/refs/heads/$Branch.zip" -OutFile $zip -UseBasicParsing
         Expand-Archive -Path $zip -DestinationPath $tmp -Force
         $src = Get-ChildItem -Path $tmp -Directory | Select-Object -First 1
-
-        New-Item -ItemType Directory -Path (Join-Path $Dest 'Tools') -Force | Out-Null
-        Copy-Item -Path (Join-Path $src.FullName 'ITToolkit.ps1') -Destination $Dest -Force
-        $srcTools = Join-Path $src.FullName 'Tools'
-        if (Test-Path $srcTools) { Copy-Item -Path (Join-Path $srcTools '*') -Destination (Join-Path $Dest 'Tools') -Recurse -Force }
+        New-Item -ItemType Directory -Path $Dest -Force | Out-Null
+        foreach ($p in $Parts) {
+            $from = Join-Path $src.FullName $p
+            if (-not (Test-Path $from)) { continue }
+            if ((Get-Item $from).PSIsContainer) {
+                $to = Join-Path $Dest $p
+                New-Item -ItemType Directory -Path $to -Force | Out-Null
+                # core / modules / data are replaced so removed files do not linger; Tools keeps your own files
+                if ($p -ne 'Tools') { Get-ChildItem $to -Force -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue }
+                Copy-Item -Path (Join-Path $from '*') -Destination $to -Recurse -Force
+            } else {
+                Copy-Item -Path $from -Destination $Dest -Force
+            }
+        }
     }
     catch {
         Write-Host "Download failed: $($_.Exception.Message)" -ForegroundColor Red
@@ -51,7 +71,8 @@
         Remove-Item -Path $tmp -Recurse -Force -ErrorAction SilentlyContinue
     }
 
-    Write-Host "Installed to $Dest - starting IT Toolkit..." -ForegroundColor Green
+    $ver = Get-Content (Join-Path $Dest 'version.txt') -ErrorAction SilentlyContinue
+    Write-Host "IT Toolkit $ver installed to $Dest - starting..." -ForegroundColor Green
     Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
-    & (Join-Path $Dest 'ITToolkit.ps1')
+    & (Join-Path $Dest 'ITToolkit.ps1') @ITK_PassThru
 }
