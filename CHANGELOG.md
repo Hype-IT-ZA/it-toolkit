@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.0
+
+- **Install tab:** added every app from Chris Titus Tech's WinUtil (172 new, 249 in total). Fixed the IDs for KeePassXC (`KeePassXCTeam.KeePassXC`) and GIMP (`GIMP.GIMP.3`).
+- **Tweaks tab:** now covers every WinUtil tweak and preference toggle (75 tweaks, up from 33), in new groups: Essential, Browsers, Network, Drivers & vendor apps, Cleanup and Remove apps.
+- Expanded the telemetry, location, visual effects, Edge debloat, BSOD and Copilot tweaks to match WinUtil.
+- **Set DNS** now has all of WinUtil's providers (Cloudflare malware/family, OpenDNS, AdGuard and AdGuard family).
+- Added **O&O ShutUp10++** under Tools → Software.
+- Added THIRD_PARTY_NOTICES.md (WinUtil MIT licence).
+
 ## 2.0.0
 
 - Rebuilt as a tabbed app: **Tools**, **Install**, **Tweaks** and **Updates**.

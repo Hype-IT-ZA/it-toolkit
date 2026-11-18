@@ -1,10 +1,58 @@
 {
   "apps": [
     {
+      "name": "Brave",
+      "id": "Brave.Brave",
+      "category": "Browsers",
+      "description": "Privacy-focused browser with ad blocking"
+    },
+    {
+      "name": "Chromium",
+      "id": "Hibbiki.Chromium",
+      "category": "Browsers",
+      "description": "Chromium is the open-source project that serves as the foundation for various web browsers, including Chrome.",
+      "source": "winutil"
+    },
+    {
+      "name": "Edge",
+      "id": "Microsoft.Edge",
+      "category": "Browsers",
+      "description": "Microsoft Edge is a modern web browser built on Chromium, offering performance, security, and integration with Microsoft services.",
+      "source": "winutil"
+    },
+    {
+      "name": "Firefox ESR",
+      "id": "Mozilla.Firefox.ESR",
+      "category": "Browsers",
+      "description": "Mozilla Firefox is an open-source web browser known for its customization options, privacy features, and extensions. Firefox ESR (Extended Support Release) receives major updates every 42 weeks with minor updates such as crash fixes, security fixes and policy updates as needed, but at least every four weeks.",
+      "source": "winutil"
+    },
+    {
+      "name": "Floorp",
+      "id": "Ablaze.Floorp",
+      "category": "Browsers",
+      "description": "Floorp is an open-source web browser project that aims to provide a simple and fast browsing experience.",
+      "source": "winutil"
+    },
+    {
       "name": "Google Chrome",
       "id": "Google.Chrome",
       "category": "Browsers",
       "description": "Google's web browser"
+    },
+    {
+      "name": "Helium",
+      "id": "ImputNet.Helium",
+      "category": "Browsers",
+      "description": "Private, fast, and honest web browser.",
+      "source": "winutil"
+    },
+    {
+      "name": "LibreWolf",
+      "id": "LibreWolf.LibreWolf",
+      "category": "Browsers",
+      "description": "LibreWolf is a privacy-focused web browser based on Firefox, with additional privacy and security enhancements.",
+      "source": "winutil"
     },
     {
       "name": "Mozilla Firefox",
@@ -13,10 +61,11 @@
       "description": "Open-source web browser"
     },
     {
-      "name": "Brave",
-      "id": "Brave.Brave",
+      "name": "Mullvad Browser",
+      "id": "MullvadVPN.MullvadBrowser",
       "category": "Browsers",
-      "description": "Privacy-focused browser with ad blocking"
+      "description": "Mullvad Browser is a privacy-focused web browser, developed in partnership with the Tor Project.",
+      "source": "winutil"
     },
     {
       "name": "Opera",
@@ -25,16 +74,72 @@
       "description": "Browser with built-in VPN"
     },
     {
+      "name": "Tor Browser",
+      "id": "TorProject.TorBrowser",
+      "category": "Browsers",
+      "description": "Tor Browser is designed for anonymous web browsing, utilizing the Tor network to protect user privacy and security.",
+      "source": "winutil"
+    },
+    {
+      "name": "Ungoogled Chromium",
+      "id": "eloston.ungoogled-chromium",
+      "category": "Browsers",
+      "description": "Ungoogled Chromium is a version of Chromium without Google's integration for enhanced privacy and control.",
+      "source": "winutil"
+    },
+    {
       "name": "Vivaldi",
       "id": "Vivaldi.Vivaldi",
       "category": "Browsers",
       "description": "Highly customisable browser"
     },
     {
-      "name": "Zoom",
-      "id": "Zoom.Zoom",
+      "name": "Waterfox",
+      "id": "Waterfox.Waterfox",
+      "category": "Browsers",
+      "description": "Waterfox is a fast, privacy-focused web browser based on Firefox, designed to preserve user choice and privacy.",
+      "source": "winutil"
+    },
+    {
+      "name": "Zen Browser",
+      "id": "Zen-Team.Zen-Browser",
+      "category": "Browsers",
+      "description": "The modern, privacy-focused, performance-driven browser built on Firefox.",
+      "source": "winutil"
+    },
+    {
+      "name": "Betterbird",
+      "id": "Betterbird.Betterbird",
       "category": "Communication",
-      "description": "Video meetings"
+      "description": "Betterbird is a fork of Mozilla Thunderbird with additional features and bugfixes.",
+      "source": "winutil"
+    },
+    {
+      "name": "Chatterino",
+      "id": "ChatterinoTeam.Chatterino",
+      "category": "Communication",
+      "description": "Chatterino is a chat client for Twitch chat that offers a clean and customizable interface for a better streaming experience.",
+      "source": "winutil"
+    },
+    {
+      "name": "Discord",
+      "id": "Discord.Discord",
+      "category": "Communication",
+      "description": "Voice and text chat"
+    },
+    {
+      "name": "Dorion",
+      "id": "SpikeHD.Dorion",
+      "category": "Communication",
+      "description": "Tiny alternative Discord client with a smaller footprint, snappier startup, themes, plugins and more!",
+      "source": "winutil"
+    },
+    {
+      "name": "Element",
+      "id": "Element.Element",
+      "category": "Communication",
+      "description": "Element is a client for Matrix; an open network for secure, decentralized communication.",
+      "source": "winutil"
     },
     {
       "name": "Microsoft Teams",
@@ -43,16 +148,45 @@
       "description": "Chat and meetings for work"
     },
     {
+      "name": "Proton Mail",
+      "id": "Proton.ProtonMail",
+      "category": "Communication",
+      "description": "Proton Mail is an end-to-end encrypted email service by Proton, protecting your privacy with zero-access encryption.",
+      "source": "winutil"
+    },
+    {
+      "name": "QTox",
+      "id": "Tox.qTox",
+      "category": "Communication",
+      "description": "QTox is a free and open-source messaging app that prioritizes user privacy and security in its design.",
+      "source": "winutil"
+    },
+    {
+      "name": "Signal",
+      "id": "OpenWhisperSystems.Signal",
+      "category": "Communication",
+      "description": "Signal is a privacy-focused messaging app that offers end-to-end encryption for secure and private communication.",
+      "source": "winutil"
+    },
+    {
       "name": "Slack",
       "id": "SlackTechnologies.Slack",
       "category": "Communication",
       "description": "Team chat"
     },
     {
-      "name": "Discord",
-      "id": "Discord.Discord",
+      "name": "TeamSpeak 3",
+      "id": "TeamSpeakSystems.TeamSpeakClient",
       "category": "Communication",
-      "description": "Voice and text chat"
+      "description": "TEAMSPEAK. YOUR TEAM. YOUR RULES. Use crystal clear sound to communicate with your teammates cross-platform with military-grade security, lag-free performance & unparalleled reliability and uptime.",
+      "source": "winutil"
+    },
+    {
+      "name": "TeamSpeak 6",
+      "id": "TeamSpeakSystems.TeamSpeakClient.Beta.6",
+      "category": "Communication",
+      "description": "TEAMSPEAK. YOUR TEAM. YOUR RULES. Use crystal clear sound to communicate with your teammates cross-platform with military-grade security, lag-free performance & unparalleled reliability and uptime.",
+      "source": "winutil"
     },
     {
       "name": "Telegram",
@@ -67,14 +201,35 @@
       "description": "Email client"
     },
     {
-      "name": "AnyDesk",
-      "id": "AnyDesk.AnyDesk",
-      "category": "Remote support",
-      "description": "Remote desktop"
+      "name": "Vesktop",
+      "id": "Vencord.Vesktop",
+      "category": "Communication",
+      "description": "A cross-platform electron-based desktop app aiming to give you a snappier Discord experience with Vencord pre-installed.",
+      "source": "winutil"
     },
     {
-      "name": "TeamViewer",
-      "id": "TeamViewer.TeamViewer",
+      "name": "Viber",
+      "id": "Rakuten.Viber",
+      "category": "Communication",
+      "description": "Viber is a free messaging and calling app with features like group chats, video calls, and more.",
+      "source": "winutil"
+    },
+    {
+      "name": "WhatsApp Desktop",
+      "id": "msstore:9NKSQGP7F2NH",
+      "category": "Communication",
+      "description": "WhatsApp Desktop is the official Windows desktop messaging app from Meta, distributed through the Microsoft Store.",
+      "source": "winutil"
+    },
+    {
+      "name": "Zoom",
+      "id": "Zoom.Zoom",
+      "category": "Communication",
+      "description": "Video meetings"
+    },
+    {
+      "name": "AnyDesk",
+      "id": "AnyDesk.AnyDesk",
       "category": "Remote support",
       "description": "Remote desktop"
     },
@@ -83,6 +238,12 @@
       "id": "RustDesk.RustDesk",
       "category": "Remote support",
       "description": "Open-source remote desktop"
+    },
+    {
+      "name": "TeamViewer",
+      "id": "TeamViewer.TeamViewer",
+      "category": "Remote support",
+      "description": "Remote desktop"
     },
     {
       "name": "Adobe Acrobat Reader",
@@ -97,10 +258,11 @@
       "description": "Lightweight PDF reader"
     },
     {
-      "name": "SumatraPDF",
-      "id": "SumatraPDF.SumatraPDF",
+      "name": "Joplin",
+      "id": "Joplin.Joplin",
       "category": "Office & PDF",
-      "description": "Tiny, fast PDF and e-book reader"
+      "description": "Joplin is an open-source note-taking and to-do application with synchronization capabilities.",
+      "source": "winutil"
     },
     {
       "name": "LibreOffice",
@@ -109,10 +271,11 @@
       "description": "Free office suite"
     },
     {
-      "name": "ONLYOFFICE",
-      "id": "ONLYOFFICE.DesktopEditors",
+      "name": "NAPS2 (Scanner)",
+      "id": "Cyanfish.NAPS2",
       "category": "Office & PDF",
-      "description": "Office suite compatible with Microsoft formats"
+      "description": "NAPS2 is a document scanning application that simplifies the process of creating electronic documents.",
+      "source": "winutil"
     },
     {
       "name": "Notepad++",
@@ -121,76 +284,113 @@
       "description": "Text and code editor"
     },
     {
+      "name": "Obsidian",
+      "id": "Obsidian.Obsidian",
+      "category": "Office & PDF",
+      "description": "Obsidian is a powerful note-taking and knowledge management application.",
+      "source": "winutil"
+    },
+    {
+      "name": "Okular",
+      "id": "KDE.Okular",
+      "category": "Office & PDF",
+      "description": "Okular is a versatile document viewer with advanced features.",
+      "source": "winutil"
+    },
+    {
+      "name": "ONLYOFFICE",
+      "id": "ONLYOFFICE.DesktopEditors",
+      "category": "Office & PDF",
+      "description": "Office suite compatible with Microsoft formats"
+    },
+    {
+      "name": "PDF-XChange Editor",
+      "id": "TrackerSoftware.PDF-XChangeEditor",
+      "category": "Office & PDF",
+      "description": "A comprehensive Windows-based software suite and editor for creating, viewing, editing, annotating, and signing PDF files.",
+      "source": "winutil"
+    },
+    {
+      "name": "PDF24 Creator",
+      "id": "geeksoftwareGmbH.PDF24Creator",
+      "category": "Office & PDF",
+      "description": "Free and easy-to-use online/desktop PDF tools that make you more productive",
+      "source": "winutil"
+    },
+    {
+      "name": "PDFgear",
+      "id": "PDFgear.PDFgear",
+      "category": "Office & PDF",
+      "description": "PDFgear is a piece of full-featured PDF management software for Windows, macOS, and mobile, and it's completely free to use.",
+      "source": "winutil"
+    },
+    {
+      "name": "PDFsam Basic",
+      "id": "PDFsam.PDFsam",
+      "category": "Office & PDF",
+      "description": "PDFsam Basic is a free and open-source tool for splitting, merging, and rotating PDF files.",
+      "source": "winutil"
+    },
+    {
+      "name": "QOwnNotes",
+      "id": "pbek.QOwnNotes",
+      "category": "Office & PDF",
+      "description": "QOwnNotes is a free open-source note-taking app with Nextcloud/ownCloud integration.",
+      "source": "winutil"
+    },
+    {
+      "name": "Simplenote",
+      "id": "Automattic.Simplenote",
+      "category": "Office & PDF",
+      "description": "Simplenote is an easy way to keep notes, lists, ideas and more.",
+      "source": "winutil"
+    },
+    {
+      "name": "SumatraPDF",
+      "id": "SumatraPDF.SumatraPDF",
+      "category": "Office & PDF",
+      "description": "Tiny, fast PDF and e-book reader"
+    },
+    {
+      "name": "Xournal++",
+      "id": "Xournal++.Xournal++",
+      "category": "Office & PDF",
+      "description": "Xournal++ is an open-source handwriting notetaking software with PDF annotation capabilities.",
+      "source": "winutil"
+    },
+    {
+      "name": "Zotero",
+      "id": "DigitalScholar.Zotero",
+      "category": "Office & PDF",
+      "description": "Zotero is a free, easy-to-use tool to help you collect, organize, cite, and share your research materials.",
+      "source": "winutil"
+    },
+    {
+      "name": "1Password",
+      "id": "AgileBits.1Password",
+      "category": "Utilities",
+      "description": "1Password is a password manager that allows you to store and manage your passwords securely.",
+      "source": "winutil"
+    },
+    {
       "name": "7-Zip",
       "id": "7zip.7zip",
       "category": "Utilities",
       "description": "Archive manager (zip, 7z, rar)"
     },
     {
-      "name": "WinRAR",
-      "id": "RARLab.WinRAR",
+      "name": "AB Download Manager",
+      "id": "amir1376.ABDownloadManager",
       "category": "Utilities",
-      "description": "Archive manager"
+      "description": "AB Download Manager is an open-source download accelerator and manager with multi-threaded downloads, queue scheduling, speed limiting, and browser integration.",
+      "source": "winutil"
     },
     {
-      "name": "PowerToys",
-      "id": "Microsoft.PowerToys",
+      "name": "AutoHotkey",
+      "id": "AutoHotkey.AutoHotkey",
       "category": "Utilities",
-      "description": "Microsoft power-user utilities"
-    },
-    {
-      "name": "Everything",
-      "id": "voidtools.Everything",
-      "category": "Utilities",
-      "description": "Instant file name search"
-    },
-    {
-      "name": "WizTree",
-      "id": "AntibodySoftware.WizTree",
-      "category": "Utilities",
-      "description": "Fast disk space analyser"
-    },
-    {
-      "name": "WinDirStat",
-      "id": "WinDirStat.WinDirStat",
-      "category": "Utilities",
-      "description": "Disk usage viewer"
-    },
-    {
-      "name": "ShareX",
-      "id": "ShareX.ShareX",
-      "category": "Utilities",
-      "description": "Screenshots and screen recording"
-    },
-    {
-      "name": "Greenshot",
-      "id": "Greenshot.Greenshot",
-      "category": "Utilities",
-      "description": "Simple screenshot tool"
-    },
-    {
-      "name": "Windows Terminal",
-      "id": "Microsoft.WindowsTerminal",
-      "category": "Utilities",
-      "description": "Modern terminal"
-    },
-    {
-      "name": "PowerShell 7",
-      "id": "Microsoft.PowerShell",
-      "category": "Utilities",
-      "description": "Latest PowerShell"
-    },
-    {
-      "name": "Rufus",
-      "id": "Rufus.Rufus",
-      "category": "Utilities",
-      "description": "Create bootable USB drives"
-    },
-    {
-      "name": "Ventoy",
-      "id": "Ventoy.Ventoy",
-      "category": "Utilities",
-      "description": "Multi-ISO bootable USB"
+      "description": "AutoHotkey is a scripting language for Windows that allows users to create custom automation scripts and macros. It is often used for automating repetitive tasks and customizing keyboard shortcuts.",
+      "source": "winutil"
     },
     {
       "name": "balenaEtcher",
@@ -199,34 +399,360 @@
       "description": "Flash images to USB and SD cards"
     },
     {
-      "name": "KeePassXC",
-      "id": "KeePassXC.KeePassXC",
-      "category": "Utilities",
-      "description": "Offline password manager"
-    },
-    {
       "name": "Bitwarden",
       "id": "Bitwarden.Bitwarden",
       "category": "Utilities",
       "description": "Password manager"
     },
     {
+      "name": "BlurAutoClicker",
+      "id": "Blur009.BlurAutoClicker",
+      "category": "Utilities",
+      "description": "An Auto-clicker with a few advanced features and generally better performance than popular alternatives.",
+      "source": "winutil"
+    },
+    {
+      "name": "Bulk Crap Uninstaller",
+      "id": "Klocman.BulkCrapUninstaller",
+      "category": "Utilities",
+      "description": "Bulk Crap Uninstaller is a free and open-source uninstaller utility for Windows. It helps users remove unwanted programs and clean up their system by uninstalling multiple applications at once.",
+      "source": "winutil"
+    },
+    {
+      "name": "Cloudflare WARP",
+      "id": "Cloudflare.Warp",
+      "category": "Utilities",
+      "description": "WARP is a freemium VPN service provided by Cloudflare. Includes usage of Cloudflare's DNS",
+      "source": "winutil"
+    },
+    {
+      "name": "Deskflow",
+      "id": "Deskflow.Deskflow",
+      "category": "Utilities",
+      "description": "Deskflow is a free and open-source software KVM that lets you share a single keyboard and mouse across multiple computers.",
+      "source": "winutil"
+    },
+    {
+      "name": "Ente Auth",
+      "id": "ente-io.auth-desktop",
+      "category": "Utilities",
+      "description": "Ente Auth is a free, cross-platform, end-to-end encrypted authenticator app.",
+      "source": "winutil"
+    },
+    {
+      "name": "Everything",
+      "id": "voidtools.Everything",
+      "category": "Utilities",
+      "description": "Instant file name search"
+    },
+    {
+      "name": "F.lux",
+      "id": "flux.flux",
+      "category": "Utilities",
+      "description": "f.lux adjusts the color temperature of your screen to reduce eye strain during nighttime use.",
+      "source": "winutil"
+    },
+    {
+      "name": "Files",
+      "id": "FilesCommunity.Files",
+      "category": "Utilities",
+      "description": "Alternative file explorer.",
+      "source": "winutil"
+    },
+    {
+      "name": "GlazeWM",
+      "id": "glzr-io.glazewm",
+      "category": "Utilities",
+      "description": "GlazeWM is a tiling window manager for Windows inspired by i3 and Polybar.",
+      "source": "winutil"
+    },
+    {
+      "name": "Greenshot",
+      "id": "Greenshot.Greenshot",
+      "category": "Utilities",
+      "description": "Simple screenshot tool"
+    },
+    {
+      "name": "HxD Hex Editor",
+      "id": "MHNexus.HxD",
+      "category": "Utilities",
+      "description": "HxD is a free hex editor that allows you to edit, view, search, and analyze binary files.",
+      "source": "winutil"
+    },
+    {
+      "name": "Internet Download Manager",
+      "id": "Tonec.InternetDownloadManager",
+      "category": "Utilities",
+      "description": "Internet Download Manager is a download manager for accelerating, resuming, and scheduling file downloads.",
+      "source": "winutil"
+    },
+    {
+      "name": "JPEG View",
+      "id": "sylikc.JPEGView",
+      "category": "Utilities",
+      "description": "JPEGView is a lean, fast and highly configurable viewer/editor for JPEG, BMP, PNG, WEBP, TGA, GIF, JXL, HEIC, HEIF, AVIF, and TIFF images with a minimal GUI.",
+      "source": "winutil"
+    },
+    {
+      "name": "KeePassXC",
+      "id": "KeePassXCTeam.KeePassXC",
+      "category": "Utilities",
+      "description": "Offline password manager"
+    },
+    {
+      "name": "MiniTool Partition Wizard",
+      "id": "MiniTool.PartitionWizard.Free",
+      "category": "Utilities",
+      "description": "Comprehensive free partition manager that performs advanced operations Windows natively cannot, such as merging partitions, converting file systems, and organizing disk capacity.",
+      "source": "winutil"
+    },
+    {
+      "name": "MSEdgeRedirect",
+      "id": "rcmaehl.MSEdgeRedirect",
+      "category": "Utilities",
+      "description": "A Tool to Redirect News, Search, Widgets, Weather, and More to your default browser.",
+      "source": "winutil"
+    },
+    {
+      "name": "NanaZip",
+      "id": "M2Team.NanaZip",
+      "category": "Utilities",
+      "description": "NanaZip is a fast and efficient file compression and decompression tool.",
+      "source": "winutil"
+    },
+    {
+      "name": "Nilesoft Shell",
+      "id": "Nilesoft.Shell",
+      "category": "Utilities",
+      "description": "Shell is an expanded context menu tool that adds extra functionality and customization options to the Windows context menu.",
+      "source": "winutil"
+    },
+    {
+      "name": "NVCleanstall",
+      "id": "TechPowerUp.NVCleanstall",
+      "category": "Utilities",
+      "description": "NVCleanstall is a tool designed to customize NVIDIA driver installations, allowing advanced users to control more aspects of the installation process.",
+      "source": "winutil"
+    },
+    {
+      "name": "OFGB (Oh Frick Go Back)",
+      "id": "xM4ddy.OFGB",
+      "category": "Utilities",
+      "description": "GUI Tool to remove ads from various places around Windows 11",
+      "source": "winutil"
+    },
+    {
+      "name": "OPAutoClicker",
+      "id": "OPAutoClicker.OPAutoClicker",
+      "category": "Utilities",
+      "description": "A full-fledged autoclicker with two modes of autoclicking, at your dynamic cursor location or at a prespecified location.",
+      "source": "winutil"
+    },
+    {
+      "name": "OpenRGB",
+      "id": "OpenRGB.OpenRGB",
+      "category": "Utilities",
+      "description": "OpenRGB is an open-source RGB lighting control software designed to manage and control RGB lighting for various components and peripherals.",
+      "source": "winutil"
+    },
+    {
+      "name": "Oracle VirtualBox",
+      "id": "Oracle.VirtualBox",
+      "category": "Utilities",
+      "description": "Oracle VirtualBox is a powerful and free open-source virtualization tool for x86 and AMD64/Intel64 architectures.",
+      "source": "winutil"
+    },
+    {
+      "name": "Parsec",
+      "id": "Parsec.Parsec",
+      "category": "Utilities",
+      "description": "Parsec is a low-latency, high-quality remote desktop sharing application for collaborating and gaming across devices.",
+      "source": "winutil"
+    },
+    {
+      "name": "PeaZip",
+      "id": "Giorgiotani.Peazip",
+      "category": "Utilities",
+      "description": "PeaZip is a free, open-source file archiver utility that supports multiple archive formats and provides encryption features.",
+      "source": "winutil"
+    },
+    {
+      "name": "Policy Plus",
+      "id": "Fleex255.PolicyPlus",
+      "category": "Utilities",
+      "description": "Local Group Policy Editor plus more, for all Windows editions.",
+      "source": "winutil"
+    },
+    {
+      "name": "PowerShell 7",
+      "id": "Microsoft.PowerShell",
+      "category": "Utilities",
+      "description": "Latest PowerShell"
+    },
+    {
+      "name": "PowerToys",
+      "id": "Microsoft.PowerToys",
+      "category": "Utilities",
+      "description": "Microsoft power-user utilities"
+    },
+    {
+      "name": "Process Lasso",
+      "id": "BitSum.ProcessLasso",
+      "category": "Utilities",
+      "description": "Process Lasso is a system optimization and automation tool that improves system responsiveness and stability by adjusting process priorities and CPU affinities.",
+      "source": "winutil"
+    },
+    {
+      "name": "Proton Authenticator",
+      "id": "Proton.ProtonAuthenticator",
+      "category": "Utilities",
+      "description": "2FA app from Proton to securely sync and backup 2FA codes.",
+      "source": "winutil"
+    },
+    {
+      "name": "Proton Drive",
+      "id": "Proton.ProtonDrive",
+      "category": "Utilities",
+      "description": "Proton Drive is an end-to-end encrypted Swiss vault for your files that protects your data.",
+      "source": "winutil"
+    },
+    {
+      "name": "Proton Pass",
+      "id": "Proton.ProtonPass",
+      "category": "Utilities",
+      "description": "Proton Pass is a cloud-based password manager with end-to-end encryption and unique email aliases.",
+      "source": "winutil"
+    },
+    {
+      "name": "qBittorrent",
+      "id": "qBittorrent.qBittorrent",
+      "category": "Utilities",
+      "description": "qBittorrent is a free and open-source BitTorrent client that aims to provide a feature-rich and lightweight alternative to other torrent clients.",
+      "source": "winutil"
+    },
+    {
+      "name": "Revo Uninstaller",
+      "id": "RevoUninstaller.RevoUninstaller",
+      "category": "Utilities",
+      "description": "Revo Uninstaller is an advanced uninstaller tool that helps you remove unwanted software and clean up your system.",
+      "source": "winutil"
+    },
+    {
+      "name": "Rufus",
+      "id": "Rufus.Rufus",
+      "category": "Utilities",
+      "description": "Create bootable USB drives"
+    },
+    {
+      "name": "ShareX",
+      "id": "ShareX.ShareX",
+      "category": "Utilities",
+      "description": "Screenshots and screen recording"
+    },
+    {
+      "name": "SignalRGB",
+      "id": "WhirlwindFX.SignalRgb",
+      "category": "Utilities",
+      "description": "SignalRGB lets you control and sync your favorite RGB devices with one free application.",
+      "source": "winutil"
+    },
+    {
+      "name": "Snappy Driver Installer Origin",
+      "id": "GlennDelahoy.SnappyDriverInstallerOrigin",
+      "category": "Utilities",
+      "description": "Snappy Driver Installer Origin is a free and open-source driver updater with a vast driver database for Windows.",
+      "source": "winutil"
+    },
+    {
+      "name": "StartAllBack",
+      "id": "StartIsBack.StartAllBack",
+      "category": "Utilities",
+      "description": "StartAllBack restores and improves Windows taskbar, Start menu, File Explorer, and shell UI behavior.",
+      "source": "winutil"
+    },
+    {
+      "name": "TightVNC",
+      "id": "GlavSoft.TightVNC",
+      "category": "Utilities",
+      "description": "TightVNC is a free and open-source remote desktop software that lets you access and control a computer over the network. With its intuitive interface, you can interact with the remote screen as if you were sitting in front of it. You can open files, launch applications, and perform other actions on the remote desktop almost as if you were physically there.",
+      "source": "winutil"
+    },
+    {
+      "name": "Total Commander",
+      "id": "Ghisler.TotalCommander",
+      "category": "Utilities",
+      "description": "Total Commander is a file manager for Windows that provides a powerful and intuitive interface for file management.",
+      "source": "winutil"
+    },
+    {
+      "name": "TranslucentTB",
+      "id": "CharlesMilette.TranslucentTB",
+      "category": "Utilities",
+      "description": "TranslucentTB is a tool that allows you to customize the transparency of the Windows Taskbar.",
+      "source": "winutil"
+    },
+    {
+      "name": "TreeSize Free",
+      "id": "JAMSoftware.TreeSize.Free",
+      "category": "Utilities",
+      "description": "TreeSize Free is a disk space manager that helps you analyze and visualize the space usage on your drives.",
+      "source": "winutil"
+    },
+    {
+      "name": "UniGetUI",
+      "id": "Devolutions.UniGetUI",
+      "category": "Utilities",
+      "description": "UniGetUI is a GUI for WinGet, Chocolatey, and other Windows CLI package managers.",
+      "source": "winutil"
+    },
+    {
+      "name": "Ventoy",
+      "id": "Ventoy.Ventoy",
+      "category": "Utilities",
+      "description": "Multi-ISO bootable USB"
+    },
+    {
+      "name": "WinDirStat",
+      "id": "WinDirStat.WinDirStat",
+      "category": "Utilities",
+      "description": "Disk usage viewer"
+    },
+    {
+      "name": "Windows Terminal",
+      "id": "Microsoft.WindowsTerminal",
+      "category": "Utilities",
+      "description": "Modern terminal"
+    },
+    {
+      "name": "WinRAR",
+      "id": "RARLab.WinRAR",
+      "category": "Utilities",
+      "description": "Archive manager"
+    },
+    {
+      "name": "Wise Program Uninstaller (WiseCleaner)",
+      "id": "WiseCleaner.WiseProgramUninstaller",
+      "category": "Utilities",
+      "description": "Wise Program Uninstaller is the perfect solution for uninstalling Windows programs, allowing you to uninstall applications quickly and completely using its simple and user-friendly interface.",
+      "source": "winutil"
+    },
+    {
+      "name": "WizTree",
+      "id": "AntibodySoftware.WizTree",
+      "category": "Utilities",
+      "description": "Fast disk space analyser"
+    },
+    {
+      "name": "Autoruns",
+      "id": "Microsoft.Sysinternals.Autoruns",
+      "category": "Hardware & diagnostics",
+      "description": "Everything that starts with Windows"
+    },
+    {
       "name": "CPU-Z",
       "id": "CPUID.CPU-Z",
       "category": "Hardware & diagnostics",
       "description": "CPU, RAM and motherboard info"
-    },
-    {
-      "name": "HWMonitor",
-      "id": "CPUID.HWMonitor",
-      "category": "Hardware & diagnostics",
-      "description": "Temperatures, voltages and fans"
-    },
-    {
-      "name": "GPU-Z",
-      "id": "TechPowerUp.GPU-Z",
-      "category": "Hardware & diagnostics",
-      "description": "Graphics card info"
     },
     {
       "name": "CrystalDiskInfo",
@@ -241,22 +767,28 @@
       "description": "Disk speed benchmark"
     },
     {
+      "name": "GPU-Z",
+      "id": "TechPowerUp.GPU-Z",
+      "category": "Hardware & diagnostics",
+      "description": "Graphics card info"
+    },
+    {
       "name": "HWiNFO",
       "id": "REALiX.HWiNFO",
       "category": "Hardware & diagnostics",
       "description": "Detailed hardware info and sensors"
     },
     {
+      "name": "HWMonitor",
+      "id": "CPUID.HWMonitor",
+      "category": "Hardware & diagnostics",
+      "description": "Temperatures, voltages and fans"
+    },
+    {
       "name": "Process Explorer",
       "id": "Microsoft.Sysinternals.ProcessExplorer",
       "category": "Hardware & diagnostics",
       "description": "Advanced Task Manager"
-    },
-    {
-      "name": "Autoruns",
-      "id": "Microsoft.Sysinternals.Autoruns",
-      "category": "Hardware & diagnostics",
-      "description": "Everything that starts with Windows"
     },
     {
       "name": "Advanced IP Scanner",
@@ -271,6 +803,24 @@
       "description": "Fast network scanner"
     },
     {
+      "name": "FileZilla",
+      "id": "TimKosse.FileZilla.Client",
+      "category": "Network",
+      "description": "FTP client"
+    },
+    {
+      "name": "Nmap",
+      "id": "Insecure.Nmap",
+      "category": "Network",
+      "description": "Network scanner"
+    },
+    {
+      "name": "OpenVPN Connect",
+      "id": "OpenVPNTechnologies.OpenVPNConnect",
+      "category": "Network",
+      "description": "VPN client"
+    },
+    {
       "name": "PuTTY",
       "id": "PuTTY.PuTTY",
       "category": "Network",
@@ -283,10 +833,10 @@
       "description": "SFTP / FTP client"
     },
     {
-      "name": "FileZilla",
-      "id": "TimKosse.FileZilla.Client",
+      "name": "WireGuard",
+      "id": "WireGuard.WireGuard",
       "category": "Network",
-      "description": "FTP client"
+      "description": "VPN client"
     },
     {
       "name": "Wireshark",
@@ -295,40 +845,81 @@
       "description": "Packet capture and analysis"
     },
     {
-      "name": "Nmap",
-      "id": "Insecure.Nmap",
-      "category": "Network",
-      "description": "Network scanner"
+      "name": "Cinebench R23",
+      "id": "Maxon.CinebenchR23",
+      "category": "Pro tools",
+      "description": "Cinebench R23 is a benchmark tool for comparing CPU rendering performance across systems.",
+      "source": "winutil"
     },
     {
-      "name": "WireGuard",
-      "id": "WireGuard.WireGuard",
-      "category": "Network",
-      "description": "VPN client"
+      "name": "Display Driver Uninstaller",
+      "id": "Wagnardsoft.DisplayDriverUninstaller",
+      "category": "Pro tools",
+      "description": "Display Driver Uninstaller (DDU) is a tool for completely uninstalling graphics drivers from NVIDIA, AMD, and Intel. It is useful for troubleshooting graphics driver-related issues.",
+      "source": "winutil"
     },
     {
-      "name": "OpenVPN Connect",
-      "id": "OpenVPNTechnologies.OpenVPNConnect",
-      "category": "Network",
-      "description": "VPN client"
+      "name": "gsudo",
+      "id": "gerardog.gsudo",
+      "category": "Pro tools",
+      "description": "gsudo is a sudo equivalent for Windows. It allows you to run commands with elevated administrative privileges directly within the current console window.",
+      "source": "winutil"
     },
     {
-      "name": "VLC media player",
-      "id": "VideoLAN.VLC",
+      "name": "ImHex",
+      "id": "WerWolv.ImHex",
+      "category": "Pro tools",
+      "description": "ImHex is a free and open-source hex editor for reverse engineers and programmers, featuring a custom pattern language for decoding binary formats, a disassembler, and data analysis tools.",
+      "source": "winutil"
+    },
+    {
+      "name": "MSI Afterburner",
+      "id": "Guru3D.Afterburner",
+      "category": "Pro tools",
+      "description": "MSI Afterburner is a graphics card overclocking utility with advanced features.",
+      "source": "winutil"
+    },
+    {
+      "name": "Mullvad VPN",
+      "id": "MullvadVPN.MullvadVPN",
+      "category": "Pro tools",
+      "description": "This is the VPN client software for the Mullvad VPN service.",
+      "source": "winutil"
+    },
+    {
+      "name": "Proton VPN",
+      "id": "Proton.ProtonVPN",
+      "category": "Pro tools",
+      "description": "Proton VPN is a no-logs VPN service that protects your privacy online with features like Secure Core and Tor over VPN.",
+      "source": "winutil"
+    },
+    {
+      "name": "Simplewall",
+      "id": "Henry++.simplewall",
+      "category": "Pro tools",
+      "description": "Simplewall is a free and open-source firewall application for Windows. It allows users to control and manage the inbound and outbound network traffic of applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "System Informer",
+      "id": "WinsiderSS.SystemInformer",
+      "category": "Pro tools",
+      "description": "A free, powerful, multi-purpose tool that helps you monitor system resources, debug software and detect malware.",
+      "source": "winutil"
+    },
+    {
+      "name": "Tailscale",
+      "id": "Tailscale.Tailscale",
+      "category": "Pro tools",
+      "description": "The Tailscale client allows you to connect all your devices using WireGuard\u00ae, without the hassle. Tailscale makes it as easy as installing an app and signing in.",
+      "source": "winutil"
+    },
+    {
+      "name": "AIMP (Music Player)",
+      "id": "AIMP.AIMP",
       "category": "Media",
-      "description": "Plays almost any video or audio"
-    },
-    {
-      "name": "Spotify",
-      "id": "Spotify.Spotify",
-      "category": "Media",
-      "description": "Music streaming"
-    },
-    {
-      "name": "OBS Studio",
-      "id": "OBSProject.OBSStudio",
-      "category": "Media",
-      "description": "Screen recording and streaming"
+      "description": "AIMP is a feature-rich music player with support for various audio formats, playlists, and customizable user interface.",
+      "source": "winutil"
     },
     {
       "name": "Audacity",
@@ -337,22 +928,58 @@
       "description": "Audio editor"
     },
     {
+      "name": "Blender (3D Graphics)",
+      "id": "BlenderFoundation.Blender",
+      "category": "Media",
+      "description": "Blender is a powerful open-source 3D creation suite, offering modeling, sculpting, animation, and rendering tools.",
+      "source": "winutil"
+    },
+    {
+      "name": "Calibre",
+      "id": "calibre.calibre",
+      "category": "Media",
+      "description": "Calibre is a powerful and easy-to-use e-book manager, viewer, and converter.",
+      "source": "winutil"
+    },
+    {
+      "name": "EarTrumpet (Audio)",
+      "id": "File-New-Project.EarTrumpet",
+      "category": "Media",
+      "description": "EarTrumpet is an audio control app for Windows, providing a simple and intuitive interface for managing sound settings.",
+      "source": "winutil"
+    },
+    {
+      "name": "File Converter",
+      "id": "AdrienAllard.FileConverter",
+      "category": "Media",
+      "description": "File Converter converts and compresses files from the Windows Explorer context menu.",
+      "source": "winutil"
+    },
+    {
+      "name": "foobar2000 (Music Player)",
+      "id": "PeterPawlowski.foobar2000",
+      "category": "Media",
+      "description": "foobar2000 is a highly customizable and extensible music player for Windows, known for its modular design and advanced features.",
+      "source": "winutil"
+    },
+    {
+      "name": "GIMP",
+      "id": "GIMP.GIMP.3",
+      "category": "Media",
+      "description": "Image editor"
+    },
+    {
       "name": "HandBrake",
       "id": "HandBrake.HandBrake",
       "category": "Media",
       "description": "Video converter"
     },
     {
-      "name": "GIMP",
-      "id": "GIMP.GIMP",
+      "name": "ImageGlass (Image Viewer)",
+      "id": "DuongDieuPhap.ImageGlass",
       "category": "Media",
-      "description": "Image editor"
-    },
-    {
-      "name": "Paint.NET",
-      "id": "dotPDN.PaintDotNet",
-      "category": "Media",
-      "description": "Simple image editor"
+      "description": "ImageGlass is a versatile image viewer with support for various image formats and a focus on simplicity and speed.",
+      "source": "winutil"
     },
     {
       "name": "IrfanView",
@@ -361,34 +988,140 @@
       "description": "Fast image viewer"
     },
     {
-      "name": "Visual Studio Code",
-      "id": "Microsoft.VisualStudioCode",
-      "category": "Development",
-      "description": "Code editor"
+      "name": "iTunes",
+      "id": "Apple.iTunes",
+      "category": "Media",
+      "description": "iTunes is a media player, media library, and online radio broadcaster application developed by Apple Inc.",
+      "source": "winutil"
     },
     {
-      "name": "Git",
-      "id": "Git.Git",
-      "category": "Development",
-      "description": "Version control"
+      "name": "K-Lite Codec Standard",
+      "id": "CodecGuide.K-LiteCodecPack.Standard",
+      "category": "Media",
+      "description": "K-Lite Codec Pack Standard is a collection of audio and video codecs and related tools, providing essential components for media playback.",
+      "source": "winutil"
     },
     {
-      "name": "GitHub Desktop",
-      "id": "GitHub.GitHubDesktop",
-      "category": "Development",
-      "description": "Git with a GUI"
+      "name": "Media Player Classic - Home Cinema",
+      "id": "clsid2.mpc-hc",
+      "category": "Media",
+      "description": "Media Player Classic - Home Cinema (MPC-HC) is a free and open-source video and audio player for Windows. MPC-HC is based on the original Guliverkli project and contains many additional features and bug fixes.",
+      "source": "winutil"
     },
     {
-      "name": "Node.js LTS",
-      "id": "OpenJS.NodeJS.LTS",
-      "category": "Development",
-      "description": "JavaScript runtime"
+      "name": "mpc-qt",
+      "id": "mpc-qt.mpc-qt",
+      "category": "Media",
+      "description": "Media Player Classic Qute Theater",
+      "source": "winutil"
     },
     {
-      "name": "Python 3.12",
-      "id": "Python.Python.3.12",
+      "name": "mpv",
+      "id": "shinchiro.mpv",
+      "category": "Media",
+      "description": "mpv is a free, open source, and cross-platform media player supporting a wide variety of media formats, codecs, and subtitle types.",
+      "source": "winutil"
+    },
+    {
+      "name": "nomacs",
+      "id": "nomacs.nomacs",
+      "category": "Media",
+      "description": "nomacs is a free, open-source image viewer, which supports multiple platforms. You can use it for viewing all common image formats, including RAW and .psd images.",
+      "source": "winutil"
+    },
+    {
+      "name": "OBS Studio",
+      "id": "OBSProject.OBSStudio",
+      "category": "Media",
+      "description": "Screen recording and streaming"
+    },
+    {
+      "name": "Paint.NET",
+      "id": "dotPDN.PaintDotNet",
+      "category": "Media",
+      "description": "Simple image editor"
+    },
+    {
+      "name": "Spotify",
+      "id": "Spotify.Spotify",
+      "category": "Media",
+      "description": "Music streaming"
+    },
+    {
+      "name": "VLC media player",
+      "id": "VideoLAN.VLC",
+      "category": "Media",
+      "description": "Plays almost any video or audio"
+    },
+    {
+      "name": "Amazon Corretto 21 (LTS)",
+      "id": "Amazon.Corretto.21.JDK",
       "category": "Development",
-      "description": "Python runtime"
+      "description": "Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).",
+      "source": "winutil"
+    },
+    {
+      "name": "Amazon Corretto 25 (LTS)",
+      "id": "Amazon.Corretto.25.JDK",
+      "category": "Development",
+      "description": "Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).",
+      "source": "winutil"
+    },
+    {
+      "name": "Amazon Corretto 8 (LTS)",
+      "id": "Amazon.Corretto.8.JDK",
+      "category": "Development",
+      "description": "Amazon Corretto is a no-cost, multiplatform, production-ready distribution of the Open Java Development Kit (OpenJDK).",
+      "source": "winutil"
+    },
+    {
+      "name": "Bruno",
+      "id": "Bruno.Bruno",
+      "category": "Development",
+      "description": "Bruno is a local-first API client that stores collections as plain text files for version control and collaboration.",
+      "source": "winutil"
+    },
+    {
+      "name": "ChatGPT Desktop",
+      "id": "msstore:9NT1R1C2HH7J",
+      "category": "Development",
+      "description": "The official ChatGPT desktop app for Windows, distributed through the Microsoft Store.",
+      "source": "winutil"
+    },
+    {
+      "name": "Claude Code",
+      "id": "Anthropic.ClaudeCode",
+      "category": "Development",
+      "description": "Anthropic's agentic coding tool for terminal and IDE development workflows.",
+      "source": "winutil"
+    },
+    {
+      "name": "Claude Desktop",
+      "id": "Anthropic.Claude",
+      "category": "Development",
+      "description": "Anthropic's Claude desktop application for focused AI-assisted work and chat.",
+      "source": "winutil"
+    },
+    {
+      "name": "CMake",
+      "id": "Kitware.CMake",
+      "category": "Development",
+      "description": "CMake is an open-source, cross-platform family of tools designed to build, test and package software.",
+      "source": "winutil"
+    },
+    {
+      "name": "Codex",
+      "id": "OpenAI.Codex",
+      "category": "Development",
+      "description": "Codex CLI is an OpenAI coding agent that runs locally in your terminal.",
+      "source": "winutil"
+    },
+    {
+      "name": "Cursor",
+      "id": "Anysphere.Cursor",
+      "category": "Development",
+      "description": "AI-powered code editor (VS Code-based) with agentic coding features and integrated AI assistance for development workflows.",
+      "source": "winutil"
     },
     {
       "name": "Docker Desktop",
@@ -397,16 +1130,223 @@
       "description": "Containers"
     },
     {
-      "name": "Visual C++ 2015-2022 (x64)",
-      "id": "Microsoft.VCRedist.2015+.x64",
-      "category": "Runtimes",
-      "description": "Needed by many apps and games"
+      "name": "Fast Node Manager",
+      "id": "Schniz.fnm",
+      "category": "Development",
+      "description": "Fast Node Manager (fnm) is a fast, cross-platform tool for installing and switching between Node.js versions.",
+      "source": "winutil"
     },
     {
-      "name": "Visual C++ 2015-2022 (x86)",
-      "id": "Microsoft.VCRedist.2015+.x86",
-      "category": "Runtimes",
-      "description": "Needed by many 32-bit apps"
+      "name": "Git",
+      "id": "Git.Git",
+      "category": "Development",
+      "description": "Version control"
+    },
+    {
+      "name": "Git Extensions",
+      "id": "GitExtensionsTeam.GitExtensions",
+      "category": "Development",
+      "description": "Git Extensions is a graphical Git client for Windows with repository, history, and commit management tools.",
+      "source": "winutil"
+    },
+    {
+      "name": "GitHub CLI",
+      "id": "GitHub.cli",
+      "category": "Development",
+      "description": "GitHub CLI brings pull requests, issues, releases, and other GitHub workflows to the terminal.",
+      "source": "winutil"
+    },
+    {
+      "name": "GitHub Desktop",
+      "id": "GitHub.GitHubDesktop",
+      "category": "Development",
+      "description": "Git with a GUI"
+    },
+    {
+      "name": "Go",
+      "id": "GoLang.Go",
+      "category": "Development",
+      "description": "Go (or Golang) is a statically typed, compiled programming language designed for simplicity, reliability, and efficiency.",
+      "source": "winutil"
+    },
+    {
+      "name": "Hugo",
+      "id": "Hugo.Hugo.Extended",
+      "category": "Development",
+      "description": "The world's fastest framework for building websites.",
+      "source": "winutil"
+    },
+    {
+      "name": "Jetbrains Toolbox",
+      "id": "JetBrains.Toolbox",
+      "category": "Development",
+      "description": "Jetbrains Toolbox is a platform for easy installation and management of JetBrains developer tools.",
+      "source": "winutil"
+    },
+    {
+      "name": "Lazygit",
+      "id": "JesseDuffield.lazygit",
+      "category": "Development",
+      "description": "Simple terminal UI for git commands.",
+      "source": "winutil"
+    },
+    {
+      "name": "Lua",
+      "id": "rjpcomputing.luaforwindows",
+      "category": "Development",
+      "description": "A 'batteries included environment' for the Lua scripting language on Windows.",
+      "source": "winutil"
+    },
+    {
+      "name": "Neovim",
+      "id": "Neovim.Neovim",
+      "category": "Development",
+      "description": "Neovim is a highly extensible text editor and an improvement over the original Vim editor.",
+      "source": "winutil"
+    },
+    {
+      "name": "Node.js LTS",
+      "id": "OpenJS.NodeJS.LTS",
+      "category": "Development",
+      "description": "JavaScript runtime"
+    },
+    {
+      "name": "NodeJS",
+      "id": "OpenJS.NodeJS",
+      "category": "Development",
+      "description": "NodeJS is a JavaScript runtime built on Chrome's V8 JavaScript engine for building server-side and networking applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "Oh My Posh (Prompt)",
+      "id": "JanDeDobbeleer.OhMyPosh",
+      "category": "Development",
+      "description": "Oh My Posh is a cross-platform prompt theme engine for any shell.",
+      "source": "winutil"
+    },
+    {
+      "name": "OpenCode",
+      "id": "SST.opencode",
+      "category": "Development",
+      "description": "OpenCode is an open-source AI coding agent built for the terminal. It is provider-agnostic and supports local and hosted AI models.",
+      "source": "winutil"
+    },
+    {
+      "name": "pnpm",
+      "id": "pnpm.pnpm",
+      "category": "Development",
+      "description": "pnpm is a fast and disk space efficient package manager for JavaScript and Node.js applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "Postman",
+      "id": "Postman.Postman",
+      "category": "Development",
+      "description": "Postman is an API platform and desktop client for designing, testing, documenting, and collaborating on APIs.",
+      "source": "winutil"
+    },
+    {
+      "name": "Python 3.12",
+      "id": "Python.Python.3.12",
+      "category": "Development",
+      "description": "Python runtime"
+    },
+    {
+      "name": "Python3",
+      "id": "Python.Python.3.14",
+      "category": "Development",
+      "description": "Python is a versatile programming language used for web development, data analysis, artificial intelligence, and more.",
+      "source": "winutil"
+    },
+    {
+      "name": "Ruby",
+      "id": "RubyInstallerTeam.Ruby.4.0",
+      "category": "Development",
+      "description": "A Ruby language execution environment with a MSYS2 installation.",
+      "source": "winutil"
+    },
+    {
+      "name": "Rust",
+      "id": "Rustlang.Rust.MSVC",
+      "category": "Development",
+      "description": "Rust is a programming language designed for safety and performance, particularly focused on systems programming.",
+      "source": "winutil"
+    },
+    {
+      "name": "Starship (Shell Prompt)",
+      "id": "Starship.Starship",
+      "category": "Development",
+      "description": "Starship is a fast, customizable, cross-platform prompt for PowerShell and other shells.",
+      "source": "winutil"
+    },
+    {
+      "name": "Sublime Text",
+      "id": "SublimeHQ.SublimeText.4",
+      "category": "Development",
+      "description": "Sublime Text is a sophisticated text editor for code, markup, and prose.",
+      "source": "winutil"
+    },
+    {
+      "name": "Unity Game Engine",
+      "id": "Unity.UnityHub",
+      "category": "Development",
+      "description": "Unity is a powerful game development platform for creating 2D, 3D, augmented reality, and virtual reality games.",
+      "source": "winutil"
+    },
+    {
+      "name": "uv",
+      "id": "astral-sh.uv",
+      "category": "Development",
+      "description": "uv is a fast Python package and project manager written in Rust.",
+      "source": "winutil"
+    },
+    {
+      "name": "Vagrant",
+      "id": "Hashicorp.Vagrant",
+      "category": "Development",
+      "description": "Vagrant builds and manages reproducible virtual machine development environments from declarative configuration.",
+      "source": "winutil"
+    },
+    {
+      "name": "Visual Studio 2022",
+      "id": "Microsoft.VisualStudio.2022.Community",
+      "category": "Development",
+      "description": "Visual Studio 2022 is an integrated development environment (IDE) for building, debugging, and deploying applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "Visual Studio 2026",
+      "id": "Microsoft.VisualStudio.Community",
+      "category": "Development",
+      "description": "Visual Studio 2026 is an integrated development environment (IDE) for building, debugging, and deploying applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "Visual Studio Code",
+      "id": "Microsoft.VisualStudioCode",
+      "category": "Development",
+      "description": "Code editor"
+    },
+    {
+      "name": "VS Codium",
+      "id": "VSCodium.VSCodium",
+      "category": "Development",
+      "description": "VSCodium is a community-driven, freely-licensed binary distribution of Microsoft's VS Code.",
+      "source": "winutil"
+    },
+    {
+      "name": "Yarn",
+      "id": "Yarn.Yarn",
+      "category": "Development",
+      "description": "Yarn is a fast, reliable, and secure dependency management tool for JavaScript projects.",
+      "source": "winutil"
+    },
+    {
+      "name": "Zed",
+      "id": "ZedIndustries.Zed",
+      "category": "Development",
+      "description": "Zed is a modern, high-performance code editor designed from the ground up for speed and collaboration.",
+      "source": "winutil"
     },
     {
       "name": ".NET Desktop Runtime 8",
@@ -421,16 +1361,92 @@
       "description": "Free Java runtime"
     },
     {
+      "name": "Visual C++ 2015-2022 (x64)",
+      "id": "Microsoft.VCRedist.2015+.x64",
+      "category": "Runtimes",
+      "description": "Needed by many apps and games"
+    },
+    {
+      "name": "Visual C++ 2015-2022 (x86)",
+      "id": "Microsoft.VCRedist.2015+.x86",
+      "category": "Runtimes",
+      "description": "Needed by many 32-bit apps"
+    },
+    {
+      "name": ".NET Desktop Runtime 10",
+      "id": "Microsoft.DotNet.DesktopRuntime.10",
+      "category": "Microsoft tools",
+      "description": ".NET Desktop Runtime 10 is a runtime environment required for running applications developed with .NET 10.",
+      "source": "winutil"
+    },
+    {
+      "name": ".NET Desktop Runtime 6",
+      "id": "Microsoft.DotNet.DesktopRuntime.6",
+      "category": "Microsoft tools",
+      "description": ".NET Desktop Runtime 6 is a runtime environment required for running applications developed with .NET 6.",
+      "source": "winutil"
+    },
+    {
+      "name": ".NET Desktop Runtime 9",
+      "id": "Microsoft.DotNet.DesktopRuntime.9",
+      "category": "Microsoft tools",
+      "description": ".NET Desktop Runtime 9 is a runtime environment required for running applications developed with .NET 9.",
+      "source": "winutil"
+    },
+    {
+      "name": "DISMTools",
+      "id": "CodingWondersSoftware.DISMTools.Stable",
+      "category": "Microsoft tools",
+      "description": "DISMTools is a fast, customizable GUI for the DISM utility, supporting Windows images from Windows 7 onward. It handles installations on any drive, offers project support, and lets users tweak settings like color modes, language, and DISM versions; powered by both native DISM and a managed DISM API.",
+      "source": "winutil"
+    },
+    {
+      "name": "NTLite",
+      "id": "Nlitesoft.NTLite",
+      "category": "Microsoft tools",
+      "description": "Integrate updates, drivers, automate Windows and application setup, speedup Windows deployment process and have it all set for the next time.",
+      "source": "winutil"
+    },
+    {
+      "name": "NuGet",
+      "id": "Microsoft.NuGet",
+      "category": "Microsoft tools",
+      "description": "NuGet is a package manager for the .NET framework, enabling developers to manage and share libraries in their .NET applications.",
+      "source": "winutil"
+    },
+    {
+      "name": "Process Monitor",
+      "id": "Microsoft.Sysinternals.ProcessMonitor",
+      "category": "Microsoft tools",
+      "description": "SysInternals Process Monitor is an advanced monitoring tool that shows real-time file system, registry, and process/thread activity.",
+      "source": "winutil"
+    },
+    {
+      "name": "PsTools",
+      "id": "Microsoft.Sysinternals.PsTools",
+      "category": "Microsoft tools",
+      "description": "Microsoft Sysinternals PsTools provides utilities for managing local and remote Windows systems and monitoring processes. PsExec can run processes under the SYSTEM account when the user has local administrative rights on the target system.",
+      "source": "winutil"
+    },
+    {
+      "name": "RDCMan",
+      "id": "Microsoft.Sysinternals.RDCMan",
+      "category": "Microsoft tools",
+      "description": "RDCMan manages multiple remote desktop connections. It is useful for managing server labs where you need regular access to each machine such as automated checkin systems and data centers.",
+      "source": "winutil"
+    },
+    {
+      "name": "TCPView",
+      "id": "Microsoft.Sysinternals.TCPView",
+      "category": "Microsoft tools",
+      "description": "SysInternals TCPView is a network monitoring tool that displays a detailed list of all TCP and UDP endpoints on your system.",
+      "source": "winutil"
+    },
+    {
       "name": "Malwarebytes",
       "id": "Malwarebytes.Malwarebytes",
       "category": "Security",
       "description": "Malware scanner"
-    },
-    {
-      "name": "Google Drive",
-      "id": "Google.GoogleDrive",
-      "category": "Cloud storage",
-      "description": "Google Drive sync"
     },
     {
       "name": "Dropbox",
@@ -439,16 +1455,51 @@
       "description": "Dropbox sync"
     },
     {
+      "name": "Google Drive",
+      "id": "Google.GoogleDrive",
+      "category": "Cloud storage",
+      "description": "Google Drive sync"
+    },
+    {
       "name": "OneDrive",
       "id": "Microsoft.OneDrive",
       "category": "Cloud storage",
       "description": "Microsoft OneDrive sync"
     },
     {
-      "name": "Steam",
-      "id": "Valve.Steam",
+      "name": "Battle.net",
+      "id": "Blizzard.BattleNet",
       "category": "Gaming",
-      "description": "PC games store"
+      "description": "Battle.net is a launcher for games created and developed by Activision Blizzard",
+      "source": "winutil"
+    },
+    {
+      "name": "Cemu",
+      "id": "Cemu.Cemu",
+      "category": "Gaming",
+      "description": "Cemu is a highly experimental software to emulate Wii U applications on PC.",
+      "source": "winutil"
+    },
+    {
+      "name": "CurseForge",
+      "id": "Overwolf.CurseForge",
+      "category": "Gaming",
+      "description": "CurseForge is a desktop application for managing mods and modpacks across multiple games, powered by Overwolf.",
+      "source": "winutil"
+    },
+    {
+      "name": "EA App",
+      "id": "ElectronicArts.EADesktop",
+      "category": "Gaming",
+      "description": "EA App is a platform for accessing and playing Electronic Arts games.",
+      "source": "winutil"
+    },
+    {
+      "name": "EmulationStation Desktop Edition",
+      "id": "ES-DE.EmulationStation-DE",
+      "category": "Gaming",
+      "description": "EmulationStation Desktop Edition is a frontend for browsing and launching games from your multi-platform game collection.",
+      "source": "winutil"
     },
     {
       "name": "Epic Games Launcher",
@@ -457,10 +1508,163 @@
       "description": "PC games store"
     },
     {
+      "name": "GeForce NOW",
+      "id": "Nvidia.GeForceNow",
+      "category": "Gaming",
+      "description": "GeForce NOW is a cloud gaming service that allows you to play high-quality PC games on your device.",
+      "source": "winutil"
+    },
+    {
       "name": "GOG Galaxy",
       "id": "GOG.Galaxy",
       "category": "Gaming",
       "description": "PC games store"
+    },
+    {
+      "name": "Heroic Games Launcher",
+      "id": "HeroicGamesLauncher.HeroicGamesLauncher",
+      "category": "Gaming",
+      "description": "Heroic Games Launcher is an open-source alternative game launcher for Epic Games Store.",
+      "source": "winutil"
+    },
+    {
+      "name": "Itch.io",
+      "id": "ItchIo.Itch",
+      "category": "Gaming",
+      "description": "Itch.io is a digital distribution platform for indie games and creative projects.",
+      "source": "winutil"
+    },
+    {
+      "name": "Modrinth App",
+      "id": "Modrinth.ModrinthApp",
+      "category": "Gaming",
+      "description": "Modrinth App is a desktop application for managing Minecraft mods and modpacks.",
+      "source": "winutil"
+    },
+    {
+      "name": "Playnite",
+      "id": "Playnite.Playnite",
+      "category": "Gaming",
+      "description": "Playnite is an open-source video game library manager with one simple goal: To provide a unified interface for all of your games.",
+      "source": "winutil"
+    },
+    {
+      "name": "Prism Launcher",
+      "id": "PrismLauncher.PrismLauncher",
+      "category": "Gaming",
+      "description": "Prism Launcher is an open-source Minecraft launcher with the ability to manage multiple instances, accounts, and mods.",
+      "source": "winutil"
+    },
+    {
+      "name": "Roblox",
+      "id": "Roblox.Roblox",
+      "category": "Gaming",
+      "description": "Roblox is a platform and game creation system that allows users to create and play games developed by the community.",
+      "source": "winutil"
+    },
+    {
+      "name": "Steam",
+      "id": "Valve.Steam",
+      "category": "Gaming",
+      "description": "PC games store"
+    },
+    {
+      "name": "Ubisoft Connect",
+      "id": "Ubisoft.Connect",
+      "category": "Gaming",
+      "description": "Ubisoft Connect is Ubisoft's digital distribution and online gaming service, providing access to Ubisoft's games and services.",
+      "source": "winutil"
+    },
+    {
+      "name": "Virtual Desktop Streamer",
+      "id": "VirtualDesktop.Streamer",
+      "category": "Gaming",
+      "description": "Virtual Desktop Streamer is a tool that allows you to stream your desktop screen to VR devices.",
+      "source": "winutil"
+    },
+    {
+      "name": "Jellyfin Media Player",
+      "id": "Jellyfin.JellyfinMediaPlayer",
+      "category": "Self-hosted",
+      "description": "Jellyfin Media Player is a client application for the Jellyfin media server, providing access to your media library.",
+      "source": "winutil"
+    },
+    {
+      "name": "Jellyfin Server",
+      "id": "Jellyfin.Server",
+      "category": "Self-hosted",
+      "description": "Jellyfin Server is an open-source media server software, allowing you to organize and stream your media library.",
+      "source": "winutil"
+    },
+    {
+      "name": "Kodi Media Center",
+      "id": "XBMCFoundation.Kodi",
+      "category": "Self-hosted",
+      "description": "Kodi is an open-source media center application that allows you to play and view most videos, music, podcasts, and other digital media files.",
+      "source": "winutil"
+    },
+    {
+      "name": "LocalSend",
+      "id": "LocalSend.LocalSend",
+      "category": "Self-hosted",
+      "description": "An open-source cross-platform alternative to AirDrop.",
+      "source": "winutil"
+    },
+    {
+      "name": "Moonlight/GameStream Client",
+      "id": "MoonlightGameStreamingProject.Moonlight",
+      "category": "Self-hosted",
+      "description": "Moonlight/GameStream Client allows you to stream PC games to other devices over your local network.",
+      "source": "winutil"
+    },
+    {
+      "name": "NetBird",
+      "id": "Netbird.Netbird",
+      "category": "Self-hosted",
+      "description": "NetBird is an open-source alternative comparable to TailScale that can be connected to a self-hosted server.",
+      "source": "winutil"
+    },
+    {
+      "name": "Nextcloud Desktop",
+      "id": "Nextcloud.NextcloudDesktop",
+      "category": "Self-hosted",
+      "description": "Nextcloud Desktop is the official desktop client for the Nextcloud file synchronization and sharing platform.",
+      "source": "winutil"
+    },
+    {
+      "name": "Plex Desktop",
+      "id": "Plex.Plex",
+      "category": "Self-hosted",
+      "description": "Plex Desktop for Windows is the front end for Plex Media Server.",
+      "source": "winutil"
+    },
+    {
+      "name": "Plex Media Server",
+      "id": "Plex.PlexMediaServer",
+      "category": "Self-hosted",
+      "description": "Plex Media Server is a media server software that allows you to organize and stream your media library. It supports various media formats and offers a wide range of features.",
+      "source": "winutil"
+    },
+    {
+      "name": "Sunshine/GameStream Server",
+      "id": "LizardByte.Sunshine",
+      "category": "Self-hosted",
+      "description": "Sunshine is a GameStream server that allows you to remotely play PC games on Android devices, offering low-latency streaming.",
+      "source": "winutil"
+    },
+    {
+      "name": "Syncthing (CLI / Web UI)",
+      "id": "Syncthing.Syncthing",
+      "category": "Self-hosted",
+      "description": "Syncthing is a decentralized, peer-to-peer file synchronization tool that securely syncs files directly across devices without cloud servers, managed via a local web interface.",
+      "source": "winutil"
+    },
+    {
+      "name": "SyncTrayzor",
+      "id": "GermanCoding.SyncTrayzor",
+      "category": "Self-hosted",
+      "description": "SyncTrayzor is a Windows tray utility that bundles and wraps Syncthing, making it behave like a native application to easily manage and monitor file synchronization.",
+      "source": "winutil"
     }
   ],
   "presets": {
