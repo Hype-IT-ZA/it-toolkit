@@ -108,6 +108,10 @@ function Get-RegValue([string]$Path, [string]$Name) {
     try { (Get-ItemProperty -Path $t -Name $Name -ErrorAction Stop).$Name } catch { $null }
 }
 
+function Get-UserProfilePaths {
+    @(Get-CimInstance Win32_UserProfile -ErrorAction SilentlyContinue | Where-Object { -not $_.Special -and $_.LocalPath -and (Test-Path $_.LocalPath) } | ForEach-Object { $_.LocalPath })
+}
+
 # ---------------- Tweaks ----------------
 function Invoke-Tweak {
     param($Tweak, [ValidateSet('Apply', 'Revert', 'Test')][string]$Mode)

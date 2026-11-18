@@ -1,10 +1,10 @@
 # IT Toolkit
 
-A free, open-source Windows support toolbox with a dark / light GUI, in the spirit of Chris Titus Tech's WinUtil but built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
+A free, open-source Windows support toolbox with a dark / light GUI. It has everything in Chris Titus Tech's WinUtil (all its apps and tweaks), plus a large set of tools built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
 
 - **Tools tab.** 120+ everyday IT tools: system, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, security, printers, power and reports.
-- **Install tab.** Tick apps from 75+ popular programs and install, upgrade or uninstall them silently with winget. Includes presets.
-- **Tweaks tab.** Privacy, performance, Explorer and taskbar tweaks. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
+- **Install tab.** Tick apps from about 250 programs (every app in WinUtil, plus more) and install, upgrade or uninstall them silently with winget. Includes presets.
+- **Tweaks tab.** 75 tweaks covering every WinUtil tweak and preference toggle. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
 - **Updates tab.** Windows Update policies (security-focused, stay on the current version, no driver updates) and update actions.
 - **Headless mode.** Run any tool, install or tweak without the window. Useful for ScreenConnect's **Commands** tab or for fixing many PCs at once.
 
@@ -50,7 +50,7 @@ Right-click any card to **add it to your favourites**. **Favourites** and **Rece
 
 ### Install
 
-Tick apps (or add a **preset**: Basic office PC, Technician toolkit, Developer or Gaming PC) and click **Install / upgrade selected**. You can also **Uninstall selected**, **Upgrade all apps**, or **Check installed** to see which apps are already on the PC. **Save selection as my preset** keeps your own list.
+Tick apps from 16 categories (or add a **preset**: Basic office PC, Technician toolkit, Developer or Gaming PC) and click **Install / upgrade selected**. You can also **Uninstall selected**, **Upgrade all apps**, or **Check installed** to see which apps are already on the PC. **Save selection as my preset** keeps your own list.
 
 As SYSTEM, the toolkit finds winget on its own and installs machine-wide where possible. If winget is missing or broken, use **Tools → Software → Install / repair winget**.
 
@@ -62,11 +62,18 @@ Tweaks that change per-user settings (HKCU) are applied to **every signed-in use
 
 | Category | Tweaks |
 |---|---|
-| Privacy | Telemetry, activity history, advertising ID, tips and suggestions, consumer features, Bing in Start, Copilot and Recall, widgets, location, quieter Edge |
-| Performance | Ultimate Performance plan, Game DVR, visual effects, Fast Startup, hibernation, Teredo |
-| Explorer & Taskbar | File extensions, hidden files, open to This PC, classic right-click menu, taskbar left, Task View button, End task, dark mode |
-| System | Sticky Keys prompt, NumLock at startup, detailed BSOD, verbose sign-in, lock screen ads |
-| Advanced | Remove promoted bloat apps, Storage Sense, Delivery Optimization P2P, SMBv1 |
+| Essential | Telemetry, activity history, consumer features, location, Delivery Optimization, hibernation, common services to Manual, Store results in search, WPBT, device companion apps, End task, Explorer folder type detection |
+| Privacy | Advertising ID, tips and suggestions, Bing in Start, Copilot and Recall (policies), widgets, background apps, notifications and calendar |
+| Browsers | Debloat Edge, debloat Brave |
+| Performance | Ultimate Performance plan, visual effects for best performance, Game DVR, Game Mode, Fast Startup, search indexing, svchost splitting, reserved storage, Multiplane Overlay |
+| Explorer & Taskbar | File extensions, hidden files, open to This PC, remove Home and Gallery, classic right-click menu, previous Start layout, hide Start recommendations, taskbar left, hide search, hide Task View, battery percentage, dark mode |
+| Preferences | Detailed BSOD, verbose sign-in, Sticky Keys, NumLock, mouse acceleration, scrollbars always visible, window snapping, Settings home page, sign-in blur, lock screen, lock screen ads, classic Outlook, long paths, Storage Sense, network in Modern Standby, S3 sleep, UTC clock |
+| Network | Prefer IPv4, disable IPv6, Teredo, unsigned RDP warnings, SMBv1, Adobe block list |
+| Drivers & vendor apps | Block Razer and Logitech auto-installs |
+| Cleanup | Disk Cleanup + remove old updates, delete temporary files |
+| Remove apps | Promoted bloat apps, Widgets, Copilot and AI apps, OneDrive, Edge, turn off BitLocker |
+
+WinUtil's buttons are here too. **O&O ShutUp10++** is under Tools → Software, **Set DNS** (all of WinUtil's DNS providers) is under Tools → Network, and **Ultimate Performance** is a tweak you can apply or undo.
 
 ### Updates
 
@@ -158,4 +165,4 @@ Tools/*.ps1          your own plugins
 
 ## Licence
 
-[MIT](LICENSE). Not affiliated with Chris Titus Tech, ConnectWise or Microsoft.
+[MIT](LICENSE). The app catalog and tweak list are based on Chris Titus Tech's [WinUtil](https://github.com/ChrisTitusTech/winutil) (MIT); see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Not affiliated with Chris Titus Tech, ConnectWise or Microsoft.

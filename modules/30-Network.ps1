@@ -39,12 +39,16 @@ Register-Tool 'Network' 'DNS lookup' 'Resolve a name' -Inputs 'Name|Hostname to 
     param($P) Resolve-DnsName -Name $P.Name -ErrorAction Stop | Select-Object Name, Type, TTL, IPAddress, NameHost | Format-Table -AutoSize
 }
 Register-Tool 'Network' 'Flush DNS cache' 'ipconfig /flushdns' { ipconfig /flushdns }
-Register-Tool 'Network' 'Set DNS servers' 'Cloudflare, Google, Quad9 or back to DHCP' -Inputs 'Provider|Cloudflare, Google, Quad9 or DHCP|Cloudflare' `
+Register-Tool 'Network' 'Set DNS servers' 'Cloudflare, Google, Quad9, OpenDNS, AdGuard or back to DHCP' -Inputs 'Provider|Cloudflare, CloudflareMalware, CloudflareFamily, Google, Quad9, OpenDNS, AdGuard, AdGuardFamily or DHCP|Cloudflare' `
     -Confirm 'This changes DNS on every connected adapter. On a company domain network this can break sign-ins and file shares. Continue?' {
     param($P)
-    $sets = @{ cloudflare = @('1.1.1.1', '1.0.0.1'); google = @('8.8.8.8', '8.8.4.4'); quad9 = @('9.9.9.9', '149.112.112.112') }
-    $choice = $P.Provider.Trim().ToLower()
-    if ($choice -ne 'dhcp' -and -not $sets.ContainsKey($choice)) { Log "Unknown provider '$($P.Provider)'. Use Cloudflare, Google, Quad9 or DHCP." 'ERROR'; return }
+    $sets = @{
+        cloudflare = @('1.1.1.1', '1.0.0.1'); cloudflaremalware = @('1.1.1.2', '1.0.0.2'); cloudflarefamily = @('1.1.1.3', '1.0.0.3')
+        google = @('8.8.8.8', '8.8.4.4'); quad9 = @('9.9.9.9', '149.112.112.112'); opendns = @('208.67.222.222', '208.67.220.220')
+        adguard = @('94.140.14.14', '94.140.15.15'); adguardfamily = @('94.140.14.15', '94.140.15.16')
+    }
+    $choice = ($P.Provider -replace '[^A-Za-z0-9]', '').ToLower()
+    if ($choice -ne 'dhcp' -and -not $sets.ContainsKey($choice)) { Log "Unknown provider '$($P.Provider)'. Use one of: $(($sets.Keys | Sort-Object) -join ', '), dhcp" 'ERROR'; return }
     foreach ($a in (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })) {
         if ($choice -eq 'dhcp') { Set-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -ResetServerAddresses; Log "$($a.InterfaceAlias): DNS reset to automatic (DHCP)" 'OK' }
         else { Set-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -ServerAddresses $sets[$choice]; Log "$($a.InterfaceAlias): DNS set to $($sets[$choice] -join ', ')" 'OK' }

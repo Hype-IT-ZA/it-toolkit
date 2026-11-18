@@ -41,3 +41,12 @@ Register-Tool 'Software' 'Install / repair winget' 'Installs the official WinGet
     $wg = Get-WingetPath
     if ($wg) { Log "winget ready: $wg" 'OK'; & $wg --version } else { Log 'winget still not found. A restart may be needed.' 'WARN' }
 }
+Register-Tool 'Software' 'O&O ShutUp10++' 'Download and open the free privacy settings tool (portable, nothing installed)' {
+    $dir = Join-Path $ITK_DataDir 'Apps'
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    $exe = Join-Path $dir 'OOSU10.exe'
+    Log 'Downloading O&O ShutUp10++ from oo-software.com...'
+    Invoke-WebRequest -Uri 'https://dl5.oo-software.com/files/ooshutup10/OOSU10.exe' -OutFile $exe -UseBasicParsing -ErrorAction Stop
+    Start-Process -FilePath $exe
+    Log 'O&O ShutUp10++ opened.' 'OK'
+}
