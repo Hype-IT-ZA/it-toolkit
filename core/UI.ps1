@@ -1341,6 +1341,27 @@ if ($UiTest) {
     }
     Test-UiStep 'Running indicator and status' { $script:ForceProgress = $true; $script:AnimPos = 120; Update-Status; & $render; $script:ForceProgress = $false }
     Test-UiStep 'Console and ticket notes' { Add-LogLine 'OK' 'ui test'; Update-Console; [void](Get-TicketNotes) }
+    # Optional screenshots for review (CI sets ITK_UITEST_SHOTS)
+    if ($env:ITK_UITEST_SHOTS) {
+        Test-UiStep 'Screenshots' {
+            New-Item -ItemType Directory -Path $env:ITK_UITEST_SHOTS -Force | Out-Null
+            $form.Width = 1400; $form.Height = 880; $form.PerformLayout(); $banner.Visible = $false
+            $txtSearch.Text = ''
+            $shots = @(
+                @{ Theme = 'Dark'; Tab = 'Tools'; Cat = 'Disk & Cleanup' }, @{ Theme = 'Light'; Tab = 'Tools'; Cat = 'All tools' }
+                @{ Theme = 'Dark'; Tab = 'Install'; Cat = 'Browsers' }, @{ Theme = 'Light'; Tab = 'Tweaks'; Cat = 'Essential' }
+                @{ Theme = 'Dark'; Tab = 'Tweaks'; Cat = 'Recommended' }, @{ Theme = 'Light'; Tab = 'Updates'; Cat = 'All' }
+            )
+            foreach ($sh in $shots) {
+                Set-Theme $sh.Theme; Select-Tab $sh.Tab; $script:CurrentCategory[$sh.Tab] = $sh.Cat; Show-Content
+                foreach ($c in $navFlow.Controls) { $c.Invalidate() }
+                [Windows.Forms.Application]::DoEvents()
+                $bmp = New-Object Drawing.Bitmap($form.Width, $form.Height)
+                $form.DrawToBitmap($bmp, (New-Object Drawing.Rectangle(0, 0, $form.Width, $form.Height)))
+                $bmp.Save((Join-Path $env:ITK_UITEST_SHOTS ('{0}-{1}.png' -f $sh.Theme, $sh.Tab)), [Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose()
+            }
+        }
+    }
     $script:TestBmp.Dispose()
     $script:UiTestExitCode = [int]($script:UiFailures.Count -gt 0)
     if ($script:UiFailures.Count) { Write-Host "UI test failed: $($script:UiFailures.Count) step(s)." -ForegroundColor Red } else { Write-Host 'UI test passed.' -ForegroundColor Green }
