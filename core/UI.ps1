@@ -972,7 +972,7 @@ $menuFav.Add_Click({
 })
 
 function New-ToolCard($tool) {
-    $c = New-Drawn 'tool' 280 88 @{ Data = $tool } 'Bg'
+    $c = New-Drawn 'tool' 280 80 @{ Data = $tool } 'Bg'
     $c.Margin = New-Object Windows.Forms.Padding(0, 0, 12, 12)
     $c.ContextMenuStrip = $cardMenu
     $tip = "$($tool.Description)`n`n$($tool.Category)"; if ($tool.Confirm) { $tip += " - asks before running" }; $tip += "`nRight-click to add to favourites"
