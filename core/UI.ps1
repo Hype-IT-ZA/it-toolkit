@@ -9,6 +9,7 @@
 #  themselves, so the whole window re-themes instantly and stays light.
 # =====================================================================
 
+if ($UiTest) { $ErrorActionPreference = 'Stop' }   # any error while building the window fails the UI test
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [Windows.Forms.Application]::EnableVisualStyles()
@@ -138,7 +139,7 @@ $cmp = [StringComparer]::OrdinalIgnoreCase
 $script:SelectedApps   = New-Object 'System.Collections.Generic.HashSet[string]' $cmp
 $script:InstalledApps  = New-Object 'System.Collections.Generic.HashSet[string]' $cmp
 $script:SelectedTweaks = New-Object 'System.Collections.Generic.HashSet[string]' $cmp
-$script:TweakStatus    = @{}
+$script:TweakState    = @{}
 $script:InstalledChecked = $false
 $script:TweakChecked = $false
 $script:Jobs     = New-Object System.Collections.ArrayList
@@ -257,7 +258,7 @@ function Draw-TweakCard($s, $g) {
     Stroke-Round $g $(if ($sel) { TC 'Accent' } elseif ($hover) { Mix-Color (TC 'Border') (TC 'Muted') 0.4 } else { TC 'Border' }) 0.5 0.5 ($w - 2) ($h - 2) 10 $(if ($sel) { 1.5 } else { 1 })
     Draw-Check $g $sel 14 13
     $right = $w - 12
-    $state = $script:TweakStatus[$t.Name]
+    $state = $script:TweakState[$t.Name]
     if ($t.Warning) { $right = (Draw-Pill $g 'Caution' (TC 'Warn') $right 11 $base) - 6 }
     elseif ($t.Recommended) { $right = (Draw-Pill $g 'Recommended' (TC 'Link') $right 11 $base) - 6 }
     if ($state -eq $true) { $right = (Draw-Pill $g 'Applied' (TC 'Ok') $right 11 $base) - 6 }
@@ -1217,8 +1218,8 @@ $script:TickHandler = {
         $job = $script:JobIndex[$item.JobId]
         if ($item.Level -eq 'EVENT') {
             switch ($item.Type) {
-                'TweakStatus'      { $script:TweakStatus[$item.Data.Name] = $item.Data.Applied; $refreshTweaks = $true }
-                'TweakStatusBatch' { foreach ($k in $item.Data.Keys) { $script:TweakStatus[$k] = $item.Data[$k] }; $refreshTweaks = $true }
+                'TweakStatus'      { $script:TweakState[$item.Data.Name] = $item.Data.Applied; $refreshTweaks = $true }
+                'TweakStatusBatch' { foreach ($k in $item.Data.Keys) { $script:TweakState[$k] = $item.Data[$k] }; $refreshTweaks = $true }
                 'AppsInstalled'    { $script:InstalledApps.Clear(); foreach ($id in @($item.Data)) { [void]$script:InstalledApps.Add([string]$id) }; $script:InstalledChecked = $true; $refreshApps = $true }
                 'UpdateAvailable'  { $lblBanner.Text = "IT Toolkit $($item.Data) is available - you have $($Config.Version)."; $banner.Visible = $true }
             }

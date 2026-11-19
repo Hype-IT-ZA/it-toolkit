@@ -235,4 +235,4 @@ finally {
     try { $Pool.Close(); $Pool.Dispose() } catch {}
 }
 if ($Headless) { exit $script:HeadlessExitCode }
-if ($UiTest) { exit $script:UiTestExitCode }
+if ($UiTest) { if ($null -eq $script:UiTestExitCode) { Write-Host 'UI test did not finish.' -ForegroundColor Red; exit 1 }; exit $script:UiTestExitCode }
