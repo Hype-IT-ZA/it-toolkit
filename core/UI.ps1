@@ -312,6 +312,7 @@ function Get-TweakPayload([string[]]$Names) {
 $script:TweakRunner = {
     param($P)
     if ($P.Mode -eq 'Apply' -and $P.RestorePoint) { [void](New-ToolkitRestorePoint 'IT Toolkit - before tweaks') }
+    $results = @{}
     foreach ($t in $P.Tweaks) {
         if ($P.Mode -ne 'Test') {
             try { Invoke-Tweak -Tweak $t -Mode $P.Mode; Log ('{0}: {1}' -f $(if ($P.Mode -eq 'Apply') { 'Applied' } else { 'Undone' }), $t.Name) 'OK' }
@@ -319,8 +320,10 @@ $script:TweakRunner = {
         }
         $state = $null
         try { $state = Invoke-Tweak -Tweak $t -Mode Test } catch {}
-        Send-ToolkitEvent 'TweakStatus' @{ Name = $t.Name; Applied = $state }
+        $results[$t.Name] = $state
     }
+    # One event with every result, so the list redraws once instead of after every few checks
+    Send-ToolkitEvent 'TweakStatusBatch' $results
     if ($P.Mode -ne 'Test') { Log 'Some changes show after Explorer restarts or the user signs out and in again (Tools > User Session > Restart Explorer).' }
 }.ToString()
 
@@ -911,6 +914,7 @@ $timer.Add_Tick({
         if ($item.Level -eq 'EVENT') {
             switch ($item.Type) {
                 'TweakStatus'     { $script:TweakStatus[$item.Data.Name] = $item.Data.Applied; $refreshTweaks = $true }
+                'TweakStatusBatch' { foreach ($k in $item.Data.Keys) { $script:TweakStatus[$k] = $item.Data[$k] }; $refreshTweaks = $true }
                 'AppsInstalled'   { $script:InstalledApps.Clear(); foreach ($id in @($item.Data)) { [void]$script:InstalledApps.Add([string]$id) }; $script:InstalledChecked = $true; $refreshApps = $true }
                 'UpdateAvailable' { $lblBanner.Text = "IT Toolkit $($item.Data) is available (you have $($Config.Version))."; $banner.Visible = $true }
             }
