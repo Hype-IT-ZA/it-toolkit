@@ -102,3 +102,13 @@ jobs:
           path: ${{ runner.temp }}/ui-shots
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Print screenshots as text (manual runs only, for reviewing the look)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          Get-ChildItem "$env:RUNNER_TEMP\ui-shots" -Filter *.png | ForEach-Object {
+              Write-Host "SHOT-BEGIN $($_.Name)"
+              $b = [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName))
+              for ($i = 0; $i -lt $b.Length; $i += 4000) { Write-Host ('SHOT ' + $b.Substring($i, [math]::Min(4000, $b.Length - $i))) }
+              Write-Host "SHOT-END"
+          }
