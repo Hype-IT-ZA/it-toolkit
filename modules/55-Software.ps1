@@ -50,3 +50,12 @@ Register-Tool 'Software' 'O&O ShutUp10++' 'Download and open the free privacy se
     Start-Process -FilePath $exe
     Log 'O&O ShutUp10++ opened.' 'OK'
 }
+Register-Tool 'Software' 'Autologon (Sysinternals)' 'Set up automatic sign-in with the password stored encrypted' {
+    $dir = Join-Path $ITK_DataDir 'Apps'
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    $exe = Join-Path $dir $(if ([Environment]::Is64BitOperatingSystem) { 'Autologon64.exe' } else { 'Autologon.exe' })
+    Log 'Downloading Autologon from live.sysinternals.com...'
+    Invoke-WebRequest -Uri "https://live.sysinternals.com/$(Split-Path $exe -Leaf)" -OutFile $exe -UseBasicParsing -ErrorAction Stop
+    Start-Process -FilePath $exe -ArgumentList '/accepteula'
+    Log 'Autologon opened. Enter the user, domain and password, then click Enable.' 'OK'
+}

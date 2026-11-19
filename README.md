@@ -2,9 +2,9 @@
 
 A free, open-source Windows support toolbox with a dark / light GUI. It has everything in Chris Titus Tech's WinUtil (all its apps and tweaks), plus a large set of tools built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
 
-- **Tools tab.** 110+ everyday IT tools: system, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, security, printers, power and reports.
+- **Tools tab.** 145+ everyday IT tools: system, drivers, blue screens, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, Domain & Entra, security, printers, power and reports.
 - **Install tab.** Tick apps from about 250 programs (every app in WinUtil, plus more) and install, upgrade or uninstall them silently with winget. Includes presets.
-- **Tweaks tab.** 75 tweaks covering every WinUtil tweak and preference toggle. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
+- **Tweaks tab.** 85 tweaks and Windows features covering every WinUtil tweak, preference toggle and Config-tab feature. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
 - **Updates tab.** Windows Update policies (security-focused, stay on the current version, no driver updates) and update actions.
 - **Headless mode.** Run any tool, install or tweak without the window. Useful for ScreenConnect's **Commands** tab or for fixing many PCs at once.
 
@@ -34,19 +34,22 @@ On an older machine (Windows 10 before 1809, or Server 2016) where the download 
 
 | Category | Highlights |
 |---|---|
-| Quick Launch | Task Manager, cmd, PowerShell, regedit, the main `.msc` consoles, Network Connections, Programs & Features, hosts file |
+| Quick Launch | Task Manager, cmd, PowerShell, regedit, the main `.msc` consoles, Control Panel and its classic applets (printers, power, sound, region, firewall...), System Restore, netplwiz, hosts file |
 | System | System summary, performance snapshot, pending reboot check, **Windows 11 readiness**, startup apps, scheduled tasks, activation, problem devices, battery health, third-party drivers |
-| Network | IP config, adapters, public IP, **speed test**, ping, traceroute, port test, DNS lookup, **set DNS** (Cloudflare, Google, Quad9 or DHCP), flush DNS, renew DHCP, network stack reset, **reset hosts file**, Wi-Fi, connections, proxy |
+| Drivers | Dell / HP / Lenovo updates with the maker's own tool (scan or install), Windows Update drivers, driver backup |
+| Blue screens | Recent stop codes and what they usually mean, crash dump analysis showing the driver involved, memory test and results |
+| Network | **Network scan**, Wi-Fi report, saved Wi-Fi networks, IP config, adapters, public IP, **speed test**, ping, traceroute, port test, DNS lookup, **set DNS** (Cloudflare, Google, Quad9 or DHCP), flush DNS, renew DHCP, network stack reset, **reset hosts file**, Wi-Fi, connections, proxy |
 | Disk & Cleanup | Disk space, safe cleanup (temp files and browser caches for all users, older than 2 days), Recycle Bins, largest folders, disk health, DISM cleanup, chkdsk scan |
 | Repair | Restore point, SFC, DISM check and restore health, time sync, gpupdate, re-register Start and Search |
 | Software | Installed software, available upgrades, upgrade all apps, winget search, install by ID, **install or repair winget** |
 | Services & Processes | Top processes, stopped automatic services, restart a service, end a process |
 | **User Session** | Runs as the *signed-in user*, not SYSTEM: who's signed in, message the user, their mapped drives and printers, restart Explorer, reset OneDrive, user gpupdate, open a website for them, user environment |
+| **Domain & Entra** | Join status (domain / Entra / Intune), the user's Entra sign-in state, domain connection test, Group Policy results (HTML), Intune sync, Intune diagnostics, Intune app errors. Runs on the PC, no domain controller access needed |
 | **Office & Teams** | Office info and channel, quick repair, online repair, update now, activation status, clear Teams cache (new and classic), reset Outlook cache, Outlook safe mode, reset the navigation pane |
 | Security & Users | Antivirus status, Defender update and quick scan, **Microsoft Safety Scanner** (detect only), firewall, **BitLocker recovery key**, BitLocker status, enable or disable RDP, local users and admins, failed logons, recent errors, shutdown history |
 | Printers | List printers, queue, **add network printer by IP**, drivers, restart spooler, clear stuck jobs |
 | Power | Power plans, restart in 5 minutes (warns the user), cancel restart, restart now, sleep and wake report |
-| **Reports** | **Health check report** (HTML with 15+ pass/warn/fail checks), **inventory export** (hardware and software CSVs), **ticket notes**, open latest report |
+| **Reports** | **Health check report** (HTML with 15+ pass/warn/fail checks), **log bundle** (one zip for escalation), **before / after snapshots**, **inventory export** (hardware and software CSVs), **ticket notes**, open latest report |
 
 Right-click any card to **add it to your favourites**. **Favourites** and **Recent** sit at the top of the sidebar.
 
@@ -74,6 +77,7 @@ Tweaks that change per-user settings (HKCU) are applied to **every signed-in use
 | Drivers & vendor apps | Block Razer and Logitech auto-installs |
 | Cleanup | Disk Cleanup + remove old updates, delete temporary files |
 | Remove apps | Promoted bloat apps, Widgets, Copilot and AI apps, OneDrive, Edge, turn off BitLocker |
+| Windows features | .NET 3.5, Hyper-V, WSL, Windows Sandbox, legacy media, NFS client, OpenSSH Server, daily registry backup, F8 recovery menu, pool.ntp.org time |
 
 WinUtil's buttons are here too. **O&O ShutUp10++** is under Tools → Software, **Set DNS** (all of WinUtil's DNS providers) is under Tools → Network, and **Ultimate Performance** is a tweak you can apply or undo.
 
@@ -105,6 +109,7 @@ $itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
 & $itk -Uninstall 'Zoom'
 & $itk -Tweak 'Show file extensions', 'Disable telemetry'
 & $itk -Tweak 'Show file extensions' -Undo
+& $itk -Setup 'https://example.com/office-pc.json'    # apps + tweaks from a saved setup
 & $itk -HealthCheck                                    # HTML report in C:\ProgramData\ITToolkit\Reports
 & $itk -Inventory                                      # hardware + software CSVs
 ```
@@ -116,6 +121,22 @@ If the toolkit is already installed:
 ```
 
 The exit code is `1` if anything logged an error.
+
+## Saved setups
+
+On the Install or Tweaks tab, tick the apps and tweaks you want and click **Export setup**. That saves a small `.json` file (by default in `C:\ProgramData\ITToolkit\Setups`):
+
+```json
+{ "name": "office-pc", "apps": ["Google.Chrome", "7zip.7zip"], "tweaks": ["Disable telemetry", "Show file extensions"] }
+```
+
+On another PC, click **Import setup** to tick the same items, then review them and install / apply. Headless, `-Setup <file or URL>` installs and applies everything in one go. You can host your setups anywhere, for example a gist or your own repo.
+
+## Versions, releases and code signing
+
+- Every change to `version.txt` on `main` creates a GitHub release with `ITToolkit.zip` (see `.github/workflows/release.yml`).
+- The one-liner installs the **latest release**. To pin a version, for example if a new release causes problems: `& ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -Version 2.2.0`
+- **Code signing (optional):** add the repository secrets `CODE_SIGNING_PFX` (base64 of your `.pfx`) and `CODE_SIGNING_PASSWORD`, and every `.ps1` in the release zip is Authenticode-signed with a timestamp. This helps on PCs that only allow signed scripts and with antivirus reputation. It needs a code signing certificate from a CA such as Sectigo, DigiCert or Certum, or Azure Trusted Signing.
 
 ## Adding your own tools and tweaks
 

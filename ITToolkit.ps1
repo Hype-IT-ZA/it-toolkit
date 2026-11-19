@@ -21,6 +21,7 @@
     .\ITToolkit.ps1 -Run 'Ping' -Inputs @{ Target = '1.1.1.1' }
     .\ITToolkit.ps1 -Install Google.Chrome, 7zip.7zip
     .\ITToolkit.ps1 -Tweak 'Show file extensions' -Undo
+    .\ITToolkit.ps1 -Setup 'C:\ProgramData\ITToolkit\Setups\office-pc.json'
     .\ITToolkit.ps1 -HealthCheck
 
 .LINK
@@ -33,6 +34,7 @@ param(
     [string[]]$Uninstall,    # winget IDs or app names to uninstall
     [string[]]$Tweak,        # tweak names to apply (or revert with -Undo)
     [switch]$Undo,
+    [string]$Setup,          # saved setup file or URL: installs its apps and applies its tweaks
     [switch]$HealthCheck,    # save a health check report
     [switch]$Inventory,      # save an inventory CSV
     [switch]$List,           # list everything that can be run
@@ -41,7 +43,7 @@ param(
     [switch]$NoRelaunch
 )
 
-$Headless = [bool]($Run -or $Install -or $Uninstall -or $Tweak -or $HealthCheck -or $Inventory -or $List)
+$Headless = [bool]($Run -or $Install -or $Uninstall -or $Tweak -or $Setup -or $HealthCheck -or $Inventory -or $List)
 
 # The GUI needs an STA thread - relaunch if needed
 if (-not $Headless -and [Threading.Thread]::CurrentThread.GetApartmentState() -ne 'STA' -and -not $NoRelaunch -and $PSCommandPath) {
@@ -59,7 +61,7 @@ try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $Root = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 $Config = @{
     AppName     = 'IT Toolkit'
-    Version     = '2.1.0'
+    Version     = '2.2.0'
     Repo        = 'Hype-IT-ZA/it-toolkit'
     Branch      = 'main'
     Root        = $Root
@@ -100,12 +102,13 @@ function Register-Tool {
         [string[]]$Inputs = @(),
         [string]$Confirm,
         [switch]$Launch,
-        [ValidateSet('Tools', 'Updates')][string]$Tab = 'Tools'
+        [ValidateSet('Tools', 'Updates')][string]$Tab = 'Tools',
+        [switch]$SaveSessionLog          # GUI saves the session log first (for tools that collect logs)
     )
     $script:Tools.Add([pscustomobject]@{
         Tab = $Tab; Category = $Category; Name = $Name; Description = $Description
         Action = $Action; Code = $Action.ToString(); Inputs = @($Inputs | Where-Object { $_ })
-        Confirm = $Confirm; Launch = [bool]$Launch
+        Confirm = $Confirm; Launch = [bool]$Launch; SaveSessionLog = [bool]$SaveSessionLog
     })
 }
 

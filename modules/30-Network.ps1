@@ -77,3 +77,51 @@ Register-Tool 'Network' 'Active connections' 'Established TCP connections by pro
         Sort-Object Process | Format-Table -AutoSize
 }
 Register-Tool 'Network' 'Proxy settings' 'WinHTTP proxy configuration' { netsh winhttp show proxy }
+Register-Tool 'Network' 'Network scan' 'Finds devices on the local network (IP, name, MAC, likely type)' {
+    $cfg = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' } | Select-Object -First 1
+    if (-not $cfg) { Log 'No connected network with a gateway.' 'ERROR'; return }
+    $myIp = @($cfg.IPv4Address)[0]
+    $prefix = [int]$myIp.PrefixLength
+    if ($prefix -lt 22) { Log "Large network (/$prefix) - scanning only the /24 around this PC." 'WARN'; $prefix = 24 }
+    $toInt = { param($ip) $b = ([Net.IPAddress]$ip).GetAddressBytes(); [Array]::Reverse($b); [BitConverter]::ToUInt32($b, 0) }
+    $toIp = { param([uint32]$n) $b = [BitConverter]::GetBytes($n); [Array]::Reverse($b); ([Net.IPAddress]$b).ToString() }
+    $mask = [uint32]([math]::Pow(2, 32) - [math]::Pow(2, 32 - $prefix))
+    $net = (& $toInt $myIp.IPAddress) -band $mask
+    $count = [math]::Pow(2, 32 - $prefix) - 2
+    $gw = @($cfg.IPv4DefaultGateway.NextHop)[0]
+    Log ('Scanning {0}/{1} ({2} addresses)...' -f (& $toIp $net), $prefix, $count)
+    $jobs = for ($i = 1; $i -le $count; $i++) {
+        $ip = & $toIp ([uint32]($net + $i))
+        $p = New-Object Net.NetworkInformation.Ping
+        [pscustomobject]@{ IP = $ip; Task = $p.SendPingAsync($ip, 800) }
+    }
+    try { [Threading.Tasks.Task]::WaitAll([Threading.Tasks.Task[]]@($jobs.Task), 5000) | Out-Null } catch {}
+    $alive = @($jobs | Where-Object { $_.Task.Status -eq 'RanToCompletion' -and $_.Task.Result.Status -eq 'Success' } | ForEach-Object IP)
+    $neighbors = @{}
+    Get-NetNeighbor -AddressFamily IPv4 -InterfaceIndex $cfg.InterfaceIndex -ErrorAction SilentlyContinue | Where-Object { $_.State -in 'Reachable', 'Stale', 'Delay', 'Probe' -and $_.LinkLayerAddress -notmatch '^(00-00-00-00-00-00|FF-FF-FF-FF-FF-FF)$' } | ForEach-Object { $neighbors[$_.IPAddress] = $_.LinkLayerAddress }
+    $all = @($alive + @($neighbors.Keys) + $myIp.IPAddress | Where-Object { $_ -notmatch '^(224|239|255)\.' } | Sort-Object { & $toInt $_ } -Unique)
+    $rows = foreach ($ip in $all) {
+        $name = ''
+        try { $t = [Net.Dns]::GetHostEntryAsync($ip); if ($t.Wait(600)) { $name = $t.Result.HostName } } catch {}
+        $open = foreach ($port in 9100, 3389, 445, 22, 80, 443) {
+            $c = New-Object Net.Sockets.TcpClient
+            try { if ($c.ConnectAsync($ip, $port).Wait(250) -and $c.Connected) { $port } } catch {} finally { $c.Dispose() }
+        }
+        $type = if ($ip -eq $myIp.IPAddress) { 'This PC' } elseif ($ip -eq $gw) { 'Router / gateway' } elseif ($open -contains 9100) { 'Printer' } elseif ($open -contains 3389) { 'Windows PC (RDP)' } elseif ($open -contains 445) { 'Windows PC / NAS' } elseif ($open -contains 22) { 'Linux / network device' } elseif ($open -contains 80 -or $open -contains 443) { 'Web-managed device' } else { '' }
+        [pscustomobject]@{ IP = $ip; Name = $name; MAC = $neighbors[$ip]; 'Likely type' = $type; 'Open ports' = ($open -join ', ') }
+    }
+    Log "$(@($rows).Count) devices found." 'OK'
+    $rows | Format-Table -AutoSize
+}
+Register-Tool 'Network' 'Wi-Fi report' 'Windows wireless report (disconnects, signal, errors - last 3 days)' {
+    netsh wlan show wlanreport | Out-Null
+    $src = "$env:ProgramData\Microsoft\Windows\WlanReport\wlan-report-latest.html"
+    if (-not (Test-Path $src)) { Log 'No Wi-Fi report produced (no wireless adapter?).' 'WARN'; return }
+    New-Item -ItemType Directory -Path $ITK_ReportDir -Force | Out-Null
+    $dst = Join-Path $ITK_ReportDir "WiFiReport_$($env:COMPUTERNAME)_$(Get-Date -Format yyyyMMdd_HHmm).html"
+    Copy-Item $src $dst -Force
+    $fails = @(Get-WinEvent -FilterHashtable @{ LogName = 'Microsoft-Windows-WLAN-AutoConfig/Operational'; Id = 8002, 8003; StartTime = (Get-Date).AddDays(-3) } -ErrorAction SilentlyContinue).Count
+    Log "Wi-Fi disconnects / failed connections in the last 3 days: $fails" $(if ($fails -gt 10) { 'WARN' } else { 'INFO' })
+    Log "Report saved: $dst  (Reports > Open latest report)" 'OK'
+}
+Register-Tool 'Network' 'Saved Wi-Fi networks' 'Wi-Fi profiles saved on this PC' { netsh wlan show profiles }

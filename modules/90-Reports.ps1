@@ -122,3 +122,83 @@ Register-Tool 'Reports' 'Inventory export' 'Hardware + software CSV for asset re
 
 Register-Tool 'Reports' 'Ticket notes' 'Summary of this session to paste into a ticket' { Show-TicketNotes } -Launch
 Register-Tool 'Reports' 'Open latest report' 'Opens the newest saved report' { Open-LatestReport } -Launch
+
+Register-Tool 'Reports' 'Log bundle for escalation' 'One zip with event logs, system info, drivers, dumps, reports and this session''s log' -SaveSessionLog {
+    $stamp = Get-Date -Format 'yyyyMMdd_HHmm'
+    $dir = Join-Path $ITK_TempDir "LogBundle_$($env:COMPUTERNAME)_$stamp"
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    Log 'Collecting system information...'
+    systeminfo.exe | Out-File "$dir\systeminfo.txt" -Encoding UTF8
+    ipconfig.exe /all | Out-File "$dir\ipconfig.txt" -Encoding UTF8
+    Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+        Where-Object DisplayName | Sort-Object DisplayName -Unique | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Export-Csv "$dir\software.csv" -NoTypeInformation -Encoding UTF8
+    Get-Service | Select-Object Name, DisplayName, Status, StartType | Export-Csv "$dir\services.csv" -NoTypeInformation -Encoding UTF8
+    Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object Name, Id, @{ n = 'RAM MB'; e = { [math]::Round($_.WorkingSet64 / 1MB) } }, Path | Export-Csv "$dir\processes.csv" -NoTypeInformation -Encoding UTF8
+    driverquery.exe /v /fo csv | Out-File "$dir\drivers.csv" -Encoding UTF8
+    Get-CimInstance Win32_PnPEntity | Where-Object { $_.ConfigManagerErrorCode -ne 0 } | Select-Object Name, ConfigManagerErrorCode, DeviceID | Export-Csv "$dir\problem-devices.csv" -NoTypeInformation -Encoding UTF8
+    Log 'Exporting event logs (last 7 days)...'
+    foreach ($log in 'System', 'Application', 'Setup') {
+        wevtutil.exe epl $log "$dir\$log.evtx" "/q:*[System[TimeCreated[timediff(@SystemTime) <= 604800000]]]" 2>&1 | Out-Null
+    }
+    Get-WinEvent -FilterHashtable @{ LogName = 'System', 'Application'; Level = 1, 2; StartTime = (Get-Date).AddDays(-7) } -MaxEvents 1000 -ErrorAction SilentlyContinue |
+        Select-Object TimeCreated, LogName, ProviderName, Id, LevelDisplayName, Message | Export-Csv "$dir\errors-7days.csv" -NoTypeInformation -Encoding UTF8
+    Log 'Running dxdiag...'
+    Start-Process dxdiag.exe -ArgumentList '/t', "`"$dir\dxdiag.txt`"" -Wait -ErrorAction SilentlyContinue
+    gpresult.exe /scope computer /h "$dir\gpresult-computer.html" /f 2>&1 | Out-Null
+    Log 'Running msinfo32 (this takes a minute or two)...'
+    Start-Process msinfo32.exe -ArgumentList '/report', "`"$dir\msinfo32.txt`"" -Wait -ErrorAction SilentlyContinue
+    $dumps = @(Get-ChildItem "$env:windir\Minidump\*.dmp" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 5)
+    if ($dumps) { New-Item -ItemType Directory -Path "$dir\Minidump" -Force | Out-Null; $dumps | Copy-Item -Destination "$dir\Minidump" -ErrorAction SilentlyContinue }
+    $cbs = "$env:windir\Logs\CBS\CBS.log"
+    if ((Test-Path $cbs) -and (Get-Item $cbs).Length -lt 50MB) { Copy-Item $cbs "$dir\CBS.log" -ErrorAction SilentlyContinue }
+    New-Item -ItemType Directory -Path "$dir\ITToolkit" -Force | Out-Null
+    Get-ChildItem $ITK_ReportDir -File -ErrorAction SilentlyContinue | Where-Object { $_.Extension -in '.html', '.csv', '.txt' } | Sort-Object LastWriteTime -Descending | Select-Object -First 8 | Copy-Item -Destination "$dir\ITToolkit" -ErrorAction SilentlyContinue
+    Get-ChildItem (Join-Path $ITK_DataDir 'Logs') -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 3 | Copy-Item -Destination "$dir\ITToolkit" -ErrorAction SilentlyContinue
+    $zip = Join-Path $ITK_ReportDir "LogBundle_$($env:COMPUTERNAME)_$stamp.zip"
+    Log 'Zipping...'
+    Compress-Archive -Path "$dir\*" -DestinationPath $zip -Force
+    Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+    Log ("Log bundle saved: {0} ({1})" -f $zip, (Format-Size (Get-Item $zip).Length)) 'OK'
+}
+
+Register-Tool 'Reports' 'Take snapshot' 'Records apps, services, startup, drivers, printers and settings to compare later' {
+    $dir = Join-Path $ITK_DataDir 'Snapshots'
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    $snap = Get-SystemSnapshot
+    $file = Join-Path $dir ('Snapshot_{0}_{1:yyyyMMdd_HHmmss}.json' -f $env:COMPUTERNAME, (Get-Date))
+    $snap | ConvertTo-Json -Depth 5 | Set-Content -Path $file -Encoding UTF8
+    foreach ($k in $snap.Sections.Keys) { Log ('{0,-24} {1}' -f $k, $snap.Sections[$k].Count) }
+    Log "Snapshot saved: $file. Do your work, then run 'Compare with snapshot'." 'OK'
+}
+Register-Tool 'Reports' 'Compare with snapshot' 'Shows what changed since the last snapshot (added, removed, changed)' {
+    $dir = Join-Path $ITK_DataDir 'Snapshots'
+    $last = Get-ChildItem $dir -Filter 'Snapshot_*.json' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if (-not $last) { Log "No snapshot yet. Run 'Take snapshot' first." 'WARN'; return }
+    $old = Get-Content $last.FullName -Raw | ConvertFrom-Json
+    $new = Get-SystemSnapshot
+    Log "Comparing with snapshot from $($old.Taken)"
+    $report = New-Object System.Collections.Generic.List[string]
+    $report.Add("Changes on $env:COMPUTERNAME since $($old.Taken) (compared $($new.Taken))")
+    $total = 0
+    foreach ($section in $new.Sections.Keys) {
+        $o = @{}; if ($old.Sections.$section) { foreach ($p in $old.Sections.$section.PSObject.Properties) { $o[$p.Name] = [string]$p.Value } }
+        $n = $new.Sections[$section]
+        $lines = New-Object System.Collections.Generic.List[string]
+        foreach ($k in $n.Keys) {
+            if (-not $o.ContainsKey($k)) { $lines.Add("  + $k  ($($n[$k]))") }
+            elseif ($o[$k] -ne [string]$n[$k]) { $lines.Add("  ~ $k  ($($o[$k]) -> $($n[$k]))") }
+        }
+        foreach ($k in $o.Keys) { if (-not $n.Contains($k)) { $lines.Add("  - $k  ($($o[$k]))") } }
+        if ($lines.Count) {
+            $total += $lines.Count
+            Log "$section ($($lines.Count) change$(if ($lines.Count -ne 1) { 's' }))" 'WARN'
+            Log ($lines -join "`n")
+            $report.Add(''); $report.Add($section); $report.AddRange($lines)
+        }
+    }
+    if (-not $total) { Log 'No changes found.' 'OK'; return }
+    $file = Join-Path $ITK_ReportDir "Changes_$($env:COMPUTERNAME)_$(Get-Date -Format yyyyMMdd_HHmm).txt"
+    New-Item -ItemType Directory -Path $ITK_ReportDir -Force | Out-Null
+    $report | Set-Content -Path $file -Encoding UTF8
+    Log "$total change(s). Saved: $file   (+ added, - removed, ~ changed)" 'OK'
+}
