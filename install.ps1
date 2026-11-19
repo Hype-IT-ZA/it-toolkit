@@ -25,6 +25,7 @@
 param(
     [string[]]$Run, [string[]]$Install, [string[]]$Uninstall, [string[]]$Tweak, [switch]$Undo,
     [switch]$HealthCheck, [switch]$Inventory, [switch]$List, [switch]$Force, [hashtable]$Inputs, [string]$Setup,
+    [switch]$SelfTest, [switch]$TweakStatus,
     [string]$Version   # install a specific release, e.g. 2.1.0 (default: latest)
 )
 $ITK_PassThru = @{}

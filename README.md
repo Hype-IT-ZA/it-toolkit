@@ -1,8 +1,10 @@
 # IT Toolkit
 
-A free, open-source Windows support toolbox with a dark / light GUI. It has everything in Chris Titus Tech's WinUtil (all its apps and tweaks), plus a large set of tools built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
+[![Tests](https://github.com/Hype-IT-ZA/it-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/Hype-IT-ZA/it-toolkit/actions/workflows/ci.yml)
 
-- **Tools tab.** 145+ everyday IT tools: system, drivers, blue screens, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, Domain & Entra, security, printers, power and reports.
+A free, open-source Windows support toolbox with a modern dark / light window: colour-coded categories with Windows' own Fluent icons, cards that reflow to the window size, and a live output console. It has everything in Chris Titus Tech's WinUtil (all its apps and tweaks), plus a large set of tools built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
+
+- **Tools tab.** 150+ everyday IT tools: system, drivers, blue screens, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, Domain & Entra, security, printers, power and reports.
 - **Install tab.** Tick apps from about 250 programs (every app in WinUtil, plus more) and install, upgrade or uninstall them silently with winget. Includes presets.
 - **Tweaks tab.** 85 tweaks and Windows features covering every WinUtil tweak, preference toggle and Config-tab feature. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
 - **Updates tab.** Windows Update policies (security-focused, stay on the current version, no driver updates) and update actions.
@@ -49,6 +51,7 @@ On an older machine (Windows 10 before 1809, or Server 2016) where the download 
 | Security & Users | Antivirus status, Defender update and quick scan, **Microsoft Safety Scanner** (detect only), firewall, **BitLocker recovery key**, BitLocker status, enable or disable RDP, local users and admins, failed logons, recent errors, shutdown history |
 | Printers | List printers, queue, **add network printer by IP**, drivers, restart spooler, clear stuck jobs |
 | Power | Power plans, restart in 5 minutes (warns the user), cancel restart, restart now, sleep and wake report |
+| **Toolkit** | **Toolkit self-test** (checks permissions, PowerShell, .NET, TLS, GitHub, winget, Task Scheduler, run-as-user and more, and says what to fix), **Report a problem** (opens the GitHub bug form) |
 | **Reports** | **Health check report** (HTML with 15+ pass/warn/fail checks), **log bundle** (one zip for escalation), **before / after snapshots**, **inventory export** (hardware and software CSVs), **ticket notes**, open latest report |
 
 Right-click any card to **add it to your favourites**. **Favourites** and **Recent** sit at the top of the sidebar.
@@ -61,7 +64,7 @@ As SYSTEM, the toolkit finds winget on its own and installs machine-wide where p
 
 ### Tweaks
 
-Each tweak shows **APPLIED** or **NOT APPLIED**, and recommended ones are marked. **Apply selected** creates a restore point first, and **Undo selected** reverses tweaks. Tweaks marked **CAUTION** explain the risk before you apply them. The few that can't be undone automatically say so.
+Each tweak shows **Applied** or **Not applied**, and recommended ones are marked. **Apply selected** creates a restore point first, and **Undo selected** reverses tweaks. Tweaks marked **Caution** explain the risk before you apply them. The few that can't be undone automatically say so.
 
 Tweaks that change per-user settings (HKCU) are applied to **every signed-in user**, so they work from Backstage too.
 
@@ -112,6 +115,8 @@ $itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
 & $itk -Setup 'https://example.com/office-pc.json'    # apps + tweaks from a saved setup
 & $itk -HealthCheck                                    # HTML report in C:\ProgramData\ITToolkit\Reports
 & $itk -Inventory                                      # hardware + software CSVs
+& $itk -TweakStatus                                    # which tweaks are applied (changes nothing)
+& $itk -SelfTest                                       # check the toolkit works on this PC
 ```
 
 If the toolkit is already installed:
@@ -131,6 +136,15 @@ On the Install or Tweaks tab, tick the apps and tweaks you want and click **Expo
 ```
 
 On another PC, click **Import setup** to tick the same items, then review them and install / apply. Headless, `-Setup <file or URL>` installs and applies everything in one go. You can host your setups anywhere, for example a gist or your own repo.
+
+## Problems and bug reports
+
+1. Run **Tools → Toolkit → Toolkit self-test** (or `-SelfTest` headless). It checks everything the toolkit depends on and tells you what to fix.
+2. Still stuck? [Open a bug report](https://github.com/Hype-IT-ZA/it-toolkit/issues/new/choose). The form asks for the version, Windows version, how you started it and the self-test output.
+
+## Tests
+
+Every push runs [`ci.yml`](.github/workflows/ci.yml) on a real Windows machine with Windows PowerShell 5.1: it parses every script and the Pages installer, runs PSScriptAnalyzer, runs the read-only tools, the health check, inventory and tweak status headless, and opens the whole window off-screen (`-UiTest`) to draw every tab, category and theme.
 
 ## Versions, releases and code signing
 
@@ -172,7 +186,7 @@ ITToolkit.ps1        entry point: options, registries, background runner
 install.ps1          one-line installer / updater
 version.txt          latest version (used for the "update available" banner)
 core/Helpers.ps1     shared helpers, loaded in the GUI and in every background task
-core/UI.ps1          the window
+core/UI.ps1          the window (owner-drawn cards, sidebar and buttons; -UiTest self-check)
 core/Headless.ps1    command-line mode
 modules/*.ps1        built-in tools, tweaks and update policies
 data/apps.json       Install tab catalog and presets
@@ -184,7 +198,7 @@ Tools/*.ps1          your own plugins
 - Windows 10 or 11, or Windows Server 2016 and later, with Windows PowerShell 5.1 (built in). Run it elevated.
 - **Backstage runs as SYSTEM.** The *User Session* tools and per-user tweaks get around this by working with the signed-in user's own session and registry.
 - Some tools only work on certain editions or hardware, for example `lusrmgr.msc` on Pro and Enterprise, battery health on laptops, and Office tools with Microsoft 365 / Click-to-Run.
-- Scroll bars stay light in dark mode because of a WinForms limitation.
+- Icons use Segoe Fluent Icons (Windows 11) or Segoe MDL2 Assets (Windows 10), which ship with Windows. On Server Core-style systems without them, the tiles show letters instead.
 
 ## Licence
 

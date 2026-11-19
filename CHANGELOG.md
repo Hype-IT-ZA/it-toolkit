@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.3.0
+
+- **New look.** The window is redrawn from scratch: every category has its own colour and a Windows Fluent icon, cards have rounded corners and reflow to fill the window, and the sidebar, tabs and buttons have icons. Pills read "Asks first", "Needs input", "Applied", "Recommended" and so on instead of capitals. Dark mode now also darkens the title bar and scroll bars, and a blue bar moves under Output while a task runs.
+- Ticking apps or tweaks, favouriting a tool and tweak status updates no longer rebuild the list, so they are instant.
+- **Toolkit self-test** (Tools → Toolkit, or `-SelfTest`): checks elevation, PowerShell, .NET, TLS, GitHub, winget, Task Scheduler, run-as-user, Windows Update, Defender, free space and pending reboot, and says what to fix.
+- `-TweakStatus` lists which tweaks are applied without changing anything.
+- **Report a problem** opens a GitHub bug form that asks for the details needed to fix it.
+- **Tests on real Windows:** every push parses all scripts, runs PSScriptAnalyzer, runs read-only tools and reports headless, and draws every part of the window off-screen (`-UiTest`).
+- New landing page with a preview of the window.
+
 ## 2.2.1
 
 - Tweaks tab: the list no longer redraws several times while tweak status is being checked. It now redraws once, when all results are in.

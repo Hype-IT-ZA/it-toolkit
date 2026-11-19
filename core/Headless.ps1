@@ -123,6 +123,24 @@ if ($Tweak) {
     }
 }
 
+if ($SelfTest) {
+    $t = $script:Tools | Where-Object Name -eq 'Toolkit self-test' | Select-Object -First 1
+    if ($t) { Invoke-HeadlessTask $t.Name $t.Code @{} }
+}
+if ($TweakStatus) {
+    $code = {
+        param($P)
+        $on = 0
+        foreach ($t in $P.Tweaks) {
+            $state = $null; try { $state = Invoke-Tweak -Tweak $t -Mode Test } catch { Log "$($t.Name): $($_.Exception.Message)" 'ERROR' }
+            if ($state -eq $true) { $on++ }
+            Log ('{0,-12} {1,-22} {2}' -f $(if ($state -eq $true) { 'APPLIED' } elseif ($state -eq $false) { 'not applied' } else { 'unknown' }), $t.Category, $t.Name) $(if ($state -eq $true) { 'OK' } else { 'INFO' })
+        }
+        Log "$on of $($P.Tweaks.Count) tweaks are applied." 'OK'
+    }.ToString()
+    Invoke-HeadlessTask 'Tweak status' $code @{ Tweaks = $script:Tweaks.ToArray() }
+}
+
 if ($HealthCheck) {
     $t = $script:Tools | Where-Object Name -eq 'Health check report' | Select-Object -First 1
     if ($t) { Invoke-HeadlessTask $t.Name $t.Code @{} }

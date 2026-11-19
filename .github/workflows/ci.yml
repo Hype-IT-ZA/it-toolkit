@@ -1,0 +1,93 @@
+# Tests every push on a real Windows machine (Windows PowerShell 5.1, the same
+# PowerShell that ScreenConnect Backstage uses).
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: powershell
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse every script
+        run: |
+          $bad = 0
+          Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
+              $errs = $null
+              [void][Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$null, [ref]$errs)
+              foreach ($e in $errs) { $bad++; Write-Host "::error file=$($_.FullName),line=$($e.Extent.StartLineNumber)::$($e.Message)" }
+          }
+          if ($bad) { exit 1 }
+          Write-Host 'All scripts parse.'
+
+      - name: Build and parse the Pages installer (web page + script in one file)
+        run: |
+          $v = (Get-Content version.txt -Raw).Trim()
+          $page = ((Get-Content site/head.html -Raw) -replace '\{\{VERSION\}\}', $v) + (Get-Content install.ps1 -Raw) + "`n" + (Get-Content site/tail.html -Raw)
+          if ((Get-Content install.ps1 -Raw) -match '</script') { throw 'install.ps1 must not contain </script' }
+          foreach ($part in 'site/head.html', 'site/tail.html') {
+              $n = ([regex]::Matches((Get-Content $part -Raw), '#>')).Count
+              if ($n -ne 1) { throw "$part must contain exactly one '#>' (found $n)" }
+          }
+          $errs = $null
+          [void][Management.Automation.Language.Parser]::ParseInput($page, [ref]$null, [ref]$errs)
+          if ($errs) { $errs | ForEach-Object { Write-Host "::error::$($_.Message) (line $($_.Extent.StartLineNumber))" }; exit 1 }
+          Write-Host "Installer page parses as PowerShell ($([math]::Round($page.Length / 1KB)) KB)."
+
+      - name: PSScriptAnalyzer (errors fail the build)
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+          $r = @(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error)
+          $r | Format-Table RuleName, ScriptName, Line, Message -AutoSize -Wrap | Out-String -Width 220 | Write-Host
+          if ($r.Count) { exit 1 }
+          $w = @(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning)
+          Write-Host "$($w.Count) warning(s), no errors."
+
+      - name: Headless - list everything
+        run: .\ITToolkit.ps1 -List
+
+      - name: Headless - read-only tools
+        run: |
+          .\ITToolkit.ps1 -Run 'System summary', 'Performance snapshot', 'Pending reboot check', 'Disk space', 'IP configuration', 'Network adapters', 'Installed software', 'Firewall status', 'Local users', 'Installed hotfixes', 'Take snapshot', 'Compare with snapshot'
+          exit $LASTEXITCODE
+
+      - name: Headless - health check and inventory reports
+        run: |
+          .\ITToolkit.ps1 -HealthCheck -Inventory
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-ChildItem "$env:ProgramData\ITToolkit\Reports" | Format-Table Name, Length -AutoSize
+
+      - name: Headless - tweak status (read-only)
+        run: |
+          .\ITToolkit.ps1 -TweakStatus
+          exit $LASTEXITCODE
+
+      - name: Toolkit self-test
+        # Some checks depend on the machine (signed-in user, winget) - shown for information
+        continue-on-error: true
+        run: |
+          .\ITToolkit.ps1 -SelfTest
+          exit $LASTEXITCODE
+
+      - name: GUI smoke test (every tab, category and theme, painted off-screen)
+        run: |
+          $p = Start-Process powershell.exe -ArgumentList '-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-File', "$PWD\ITToolkit.ps1", '-UiTest', '-NoRelaunch' -NoNewWindow -Wait -PassThru
+          exit $p.ExitCode

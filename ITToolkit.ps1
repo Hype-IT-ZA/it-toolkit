@@ -23,6 +23,8 @@
     .\ITToolkit.ps1 -Tweak 'Show file extensions' -Undo
     .\ITToolkit.ps1 -Setup 'C:\ProgramData\ITToolkit\Setups\office-pc.json'
     .\ITToolkit.ps1 -HealthCheck
+    .\ITToolkit.ps1 -SelfTest
+    .\ITToolkit.ps1 -TweakStatus
 
 .LINK
     https://github.com/Hype-IT-ZA/it-toolkit
@@ -37,17 +39,25 @@ param(
     [string]$Setup,          # saved setup file or URL: installs its apps and applies its tweaks
     [switch]$HealthCheck,    # save a health check report
     [switch]$Inventory,      # save an inventory CSV
+    [switch]$SelfTest,       # check this PC is ready for the toolkit
+    [switch]$TweakStatus,    # report which tweaks are applied
+    [switch]$UiTest,         # build the window off-screen, click through every view, then exit (used by CI)
     [switch]$List,           # list everything that can be run
     [switch]$Force,          # allow tools / tweaks that normally ask "are you sure?"
     [hashtable]$Inputs = @{},
     [switch]$NoRelaunch
 )
 
-$Headless = [bool]($Run -or $Install -or $Uninstall -or $Tweak -or $Setup -or $HealthCheck -or $Inventory -or $List)
+$Headless = [bool]($Run -or $Install -or $Uninstall -or $Tweak -or $Setup -or $HealthCheck -or $Inventory -or $List -or $SelfTest -or $TweakStatus)
 
 # The GUI needs an STA thread - relaunch if needed
 if (-not $Headless -and [Threading.Thread]::CurrentThread.GetApartmentState() -ne 'STA' -and -not $NoRelaunch -and $PSCommandPath) {
-    Start-Process powershell.exe -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-File', "`"$PSCommandPath`"", '-NoRelaunch')
+    $relaunch = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-File', "`"$PSCommandPath`"", '-NoRelaunch')
+    if ($UiTest) {
+        $p = Start-Process powershell.exe -ArgumentList ($relaunch + '-UiTest') -NoNewWindow -Wait -PassThru
+        exit $p.ExitCode
+    }
+    Start-Process powershell.exe -ArgumentList $relaunch
     return
 }
 
@@ -61,7 +71,7 @@ try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}
 $Root = if ($PSScriptRoot) { $PSScriptRoot } else { (Get-Location).Path }
 $Config = @{
     AppName     = 'IT Toolkit'
-    Version     = '2.2.1'
+    Version     = '2.3.0'
     Repo        = 'Hype-IT-ZA/it-toolkit'
     Branch      = 'main'
     Root        = $Root
@@ -219,3 +229,4 @@ finally {
     try { $Pool.Close(); $Pool.Dispose() } catch {}
 }
 if ($Headless) { exit $script:HeadlessExitCode }
+if ($UiTest) { exit $script:UiTestExitCode }

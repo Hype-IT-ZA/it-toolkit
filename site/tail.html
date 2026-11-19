@@ -2,7 +2,12 @@
 <script>
 (function () {
   var root = document.documentElement, sw = document.getElementById('themeSwitch');
-  function set(t) { root.setAttribute('data-theme', t); sw.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false'); }
+  var pm = document.getElementById('previewMode');
+  function set(t) {
+    root.setAttribute('data-theme', t); sw.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
+    if (pm) { pm.textContent = t === 'dark' ? 'Dark' : 'Light'; }
+    var m = document.querySelector('meta[name=theme-color]'); if (m) { m.setAttribute('content', t === 'dark' ? '#15171c' : '#f3f4f7'); }
+  }
   var saved = null; try { saved = localStorage.getItem('itk-theme'); } catch (e) {}
   set(saved || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
   sw.addEventListener('click', function () {
@@ -12,7 +17,8 @@
   document.querySelectorAll('[data-copy]').forEach(function (b) {
     b.addEventListener('click', function () {
       var text = b.getAttribute('data-copy');
-      var done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1600); };
+      var label = b.querySelector('span') || b;
+      var done = function () { label.textContent = 'Copied'; setTimeout(function () { label.textContent = 'Copy'; }, 1600); };
       if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, done); } else { done(); }
     });
   });

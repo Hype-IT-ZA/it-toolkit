@@ -9,6 +9,8 @@ $ITK_DataDir   = Join-Path $env:ProgramData 'ITToolkit'
 $ITK_ReportDir = Join-Path $ITK_DataDir 'Reports'
 $ITK_TempDir   = Join-Path $ITK_DataDir 'Temp'
 $ITK_Settings  = Join-Path $ITK_DataDir 'settings.json'
+$ITK_Root      = if ($PSScriptRoot) { Split-Path $PSScriptRoot -Parent } else { $ITK_DataDir }
+$ITK_Version   = "$(Get-Content (Join-Path $ITK_Root 'version.txt') -ErrorAction SilentlyContinue | Select-Object -First 1)".Trim()
 
 function Format-Size([double]$Bytes) {
     if ($Bytes -ge 1TB) { '{0:N2} TB' -f ($Bytes / 1TB) }

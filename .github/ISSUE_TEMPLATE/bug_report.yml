@@ -1,0 +1,69 @@
+name: Bug report
+description: Something in IT Toolkit failed or behaved wrongly
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Running **Tools > Toolkit > Toolkit self-test** first and pasting its output below helps a lot.
+        Please remove anything private (computer names, user names, IP addresses) before posting.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Which tool, tweak or tab, and what went wrong.
+      placeholder: Running "Network scan" on the Tools tab shows an error and no devices.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the toolkit with the one-liner
+        2. Tools > Network > Network scan
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: input
+    id: version
+    attributes:
+      label: Toolkit version
+      description: Shown in the window title and at the top of the output.
+      placeholder: "2.3.0"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 Pro 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: how
+    attributes:
+      label: How was it started?
+      options:
+        - One-liner (irm ... | iex) in an admin PowerShell
+        - ScreenConnect Backstage
+        - Headless (-Run, -Install, -Tweak ...)
+        - Local copy of ITToolkit.ps1
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output / error
+      description: Copy from the Output panel (Copy button) or the saved log in C:\ProgramData\ITToolkit\Logs.
+      render: text
+  - type: textarea
+    id: selftest
+    attributes:
+      label: Toolkit self-test output (optional)
+      render: text
