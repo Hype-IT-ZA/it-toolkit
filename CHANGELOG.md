@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.2.0
+
+- **Domain & Entra** (checks on the PC itself, no domain controller access needed): join status, the user's Entra sign-in (PRT) state, domain connection test, Group Policy results with an HTML report, Intune sync, Intune diagnostics bundle and Intune app errors.
+- **Drivers:** scan for or install Dell / HP / Lenovo updates using each maker's own tool, Windows Update drivers, and a driver backup export.
+- **Blue screens:** recent stop codes with what they usually mean, crash dump analysis that shows the driver involved (NirSoft BlueScreenView), and a memory test with its results.
+- **Network:** network scan (devices, names, MACs, likely type), Wi-Fi report and saved Wi-Fi networks.
+- **Reports:** log bundle zip for escalation, and before / after snapshots that list everything that changed.
+- **Saved setups:** export ticked apps and tweaks to a file and import them on another PC, or run `-Setup <file or URL>` headless.
+- **Windows features** (WinUtil Config tab): .NET 3.5, Hyper-V, WSL, Sandbox, legacy media, NFS, OpenSSH Server, daily registry backup, F8 recovery menu and pool.ntp.org time. Each can be undone.
+- Full system corruption scan, Autologon (Sysinternals) and 11 more Control Panel shortcuts.
+- **Releases:** each version bump creates a GitHub release with `ITToolkit.zip`. The installer uses the latest release, and `-Version 2.2.0` installs a specific one. Scripts are signed automatically when a code signing certificate is added as a repository secret.
+
 ## 2.1.0
 
 - **Install tab:** added every app from Chris Titus Tech's WinUtil (172 new, 249 in total). Fixed the IDs for KeePassXC (`KeePassXCTeam.KeePassXC`) and GIMP (`GIMP.GIMP.3`).

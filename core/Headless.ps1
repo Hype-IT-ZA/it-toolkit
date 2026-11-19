@@ -65,6 +65,17 @@ if ($List) {
     $script:Apps | Sort-Object category, name | Format-Table category, name, id -AutoSize | Out-String -Width 220 | Write-Host
 }
 
+if ($Setup) {
+    try {
+        $setupData = if ($Setup -match '^https?://') { Invoke-RestMethod -Uri $Setup -TimeoutSec 20 } else { Get-Content -Path $Setup -Raw | ConvertFrom-Json }
+        if ($setupData -is [string]) { $setupData = $setupData | ConvertFrom-Json }
+        $setupApps = @($setupData.apps | Where-Object { $_ }); $setupTweaks = @($setupData.tweaks | Where-Object { $_ })
+        Write-HeadlessLine 'INFO' "Setup '$($setupData.name)': $($setupApps.Count) apps, $($setupTweaks.Count) tweaks"
+        $Install = @(@($Install) + $setupApps | Where-Object { $_ })
+        $Tweak = @(@($Tweak) + $setupTweaks | Where-Object { $_ })
+    } catch { Write-HeadlessLine 'ERROR' "Could not read setup '$Setup': $($_.Exception.Message)"; $script:HeadlessErrors++ }
+}
+
 foreach ($n in @($Run)) {
     if (-not $n) { continue }
     $tool = $script:Tools | Where-Object { $_.Name -eq $n -or "$($_.Category)/$($_.Name)" -eq $n } | Select-Object -First 1

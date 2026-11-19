@@ -7,7 +7,7 @@
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>IT Toolkit - Windows support toolbox</title>
-<meta name="description" content="Free, open-source Windows support toolbox: 110+ tools, 249 apps, 75 undoable tweaks. One PowerShell command.">
+<meta name="description" content="Free, open-source Windows support toolbox: 145+ tools, 249 apps, 85 undoable tweaks and features. One PowerShell command.">
 <style>
 :root{--bg:#f3f4f7;--surface:#ffffff;--card:#ffffff;--border:#dde1e8;--text:#1d2330;--muted:#5d6878;--accent:#2563eb;--accent-hover:#1d4fc4;--link:#1d4fc4;--code:#0f1115;--code-text:#e7e9ee;--ok:#15803d;--warn:#b45309}
 html[data-theme=dark]{--bg:#15171c;--surface:#1b1e24;--card:#1f2229;--border:#353b47;--text:#e7e9ee;--muted:#98a1b0;--accent:#2563eb;--accent-hover:#1d4fc4;--link:#60a5fa;--code:#0b0d11;--code-text:#e7e9ee;--ok:#4ade80;--warn:#fbbf24}
@@ -92,9 +92,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <h2>Four tabs, everything in one place</h2>
   <p class="sub">Every task runs in the background, so the window never freezes, and the output is colour-coded.</p>
   <div class="grid">
-    <div class="card"><div class="big">110+</div><h3>Tools</h3><p>System, network, disk cleanup, repair, Office and Teams, user session, security, printers, power and reports.</p></div>
+    <div class="card"><div class="big">145+</div><h3>Tools</h3><p>System, drivers, blue screens, network scan, repair, Office and Teams, Domain &amp; Entra, user session, security and reports.</p></div>
     <div class="card"><div class="big">249</div><h3>Install</h3><p>Tick apps and install, upgrade or uninstall them silently with winget. Presets included.</p></div>
-    <div class="card"><div class="big">75</div><h3>Tweaks</h3><p>Privacy, performance and Explorer tweaks. Restore point first, live status, and undo.</p></div>
+    <div class="card"><div class="big">85</div><h3>Tweaks</h3><p>Privacy, performance and Explorer tweaks plus Windows features. Restore point first, live status, and undo.</p></div>
     <div class="card"><div class="big">13</div><h3>Updates</h3><p>Security-focused policy, stay on your Windows version, no driver updates, install now.</p></div>
   </div>
 </div></section>
@@ -105,7 +105,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <ul class="ticks">
       <li>Runs as SYSTEM in Backstage, with no Explorer needed</li>
       <li>User-session tools and tweaks reach the signed-in user, not SYSTEM</li>
-      <li>HTML health check report and hardware / software inventory</li>
+      <li>HTML health check, log bundle for escalation and before / after snapshots</li>
+      <li>Saved setups: export apps and tweaks once, apply them on every new PC</li>
       <li>Ticket notes summarise the session, ready to paste</li>
       <li>Optional webhook to Discord, Slack or Teams</li>
       <li>Favourites, recent tools and a PS&gt; prompt for anything else</li>
@@ -140,6 +141,9 @@ $itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
 
 <span class="c"># Apply a tweak (add -Undo to revert)</span>
 &amp; $itk -Tweak 'Show file extensions'
+
+<span class="c"># Apply a saved setup (apps + tweaks)</span>
+&amp; $itk -Setup 'https://example.com/office-pc.json'
 
 <span class="c"># Save an HTML health check report</span>
 &amp; $itk -HealthCheck</pre>

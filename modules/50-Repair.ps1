@@ -17,3 +17,10 @@ Register-Tool 'Repair' 'Re-register Start menu & Search' 'Fixes a Start menu tha
     Stop-Process -Name StartMenuExperienceHost, SearchHost, explorer -Force -ErrorAction SilentlyContinue
     Log 'Done. Explorer and Start will restart by themselves.' 'OK'
 }
+Register-Tool 'Repair' 'Full system corruption scan' 'chkdsk scan, SFC, DISM restore health, then SFC again (30-60 min)' {
+    Log 'Step 1/4: chkdsk online scan'; chkdsk.exe "$env:SystemDrive" /scan
+    Log 'Step 2/4: SFC'; sfc.exe /scannow
+    Log 'Step 3/4: DISM restore health'; dism.exe /Online /Cleanup-Image /RestoreHealth /NoRestart
+    Log 'Step 4/4: SFC again (fixes files DISM made repairable)'; sfc.exe /scannow
+    Log 'Corruption scan finished. Restart if anything was repaired.' 'OK'
+}

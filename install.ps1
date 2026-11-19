@@ -12,18 +12,24 @@
         & ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -Run 'Safe cleanup'
         & ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -HealthCheck
 
+    A specific version (if a new release ever causes problems):
+
+        & ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -Version 2.2.0
+
     What it does:
-      1. Downloads the latest version of the repo from GitHub
+      1. Downloads the latest release from GitHub (or the version you ask for)
       2. Copies it to C:\ProgramData\ITToolkit (your own files in the Tools folder are kept)
       3. Starts the toolkit
     Run it again any time to update.
 #>
 param(
     [string[]]$Run, [string[]]$Install, [string[]]$Uninstall, [string[]]$Tweak, [switch]$Undo,
-    [switch]$HealthCheck, [switch]$Inventory, [switch]$List, [switch]$Force, [hashtable]$Inputs
+    [switch]$HealthCheck, [switch]$Inventory, [switch]$List, [switch]$Force, [hashtable]$Inputs, [string]$Setup,
+    [string]$Version   # install a specific release, e.g. 2.1.0 (default: latest)
 )
 $ITK_PassThru = @{}
-foreach ($k in $PSBoundParameters.Keys) { $ITK_PassThru[$k] = $PSBoundParameters[$k] }
+foreach ($k in $PSBoundParameters.Keys) { if ($k -ne 'Version') { $ITK_PassThru[$k] = $PSBoundParameters[$k] } }
+$ITK_Version = $Version
 
 & {
     $ErrorActionPreference = 'Stop'
@@ -40,12 +46,24 @@ foreach ($k in $PSBoundParameters.Keys) { $ITK_PassThru[$k] = $PSBoundParameters
     $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if (-not $isAdmin) { Write-Host 'Warning: not running elevated - many tools need admin rights.' -ForegroundColor Yellow }
 
-    Write-Host "IT Toolkit: downloading the latest version from github.com/$Repo ..." -ForegroundColor Cyan
+    # Latest release asset first (signed when a certificate is configured), then the branch / tag archive
+    $sources = if ($ITK_Version) {
+        $v = $ITK_Version.TrimStart('v')
+        "https://github.com/$Repo/releases/download/v$v/ITToolkit.zip", "https://github.com/$Repo/archive/refs/tags/v$v.zip"
+    } else {
+        "https://github.com/$Repo/releases/latest/download/ITToolkit.zip", "https://github.com/$Repo/archive/refs/heads/$Branch.zip"
+    }
+    $what = if ($ITK_Version) { "version $ITK_Version" } else { 'the latest version' }
+    Write-Host "IT Toolkit: downloading $what from github.com/$Repo ..." -ForegroundColor Cyan
     $tmp = Join-Path $env:TEMP ('ittoolkit_' + [guid]::NewGuid().ToString('N'))
     New-Item -ItemType Directory -Path $tmp -Force | Out-Null
     try {
         $zip = Join-Path $tmp 'repo.zip'
-        Invoke-WebRequest -Uri "https://github.com/$Repo/archive/refs/heads/$Branch.zip" -OutFile $zip -UseBasicParsing
+        $got = $null
+        foreach ($u in $sources) {
+            try { Invoke-WebRequest -Uri $u -OutFile $zip -UseBasicParsing; $got = $u; break } catch { }
+        }
+        if (-not $got) { throw "IT Toolkit $what was not found on GitHub." }
         Expand-Archive -Path $zip -DestinationPath $tmp -Force
         $src = Get-ChildItem -Path $tmp -Directory | Select-Object -First 1
         New-Item -ItemType Directory -Path $Dest -Force | Out-Null

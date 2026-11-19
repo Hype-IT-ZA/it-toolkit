@@ -1,0 +1,73 @@
+# Creates a GitHub release with ITToolkit.zip whenever version.txt changes on main.
+# The installer downloads the latest release by default (and older ones with -Version).
+#
+# Optional code signing: add two repository secrets and every .ps1 in the zip is Authenticode-signed:
+#   CODE_SIGNING_PFX       base64 of your code signing certificate (.pfx)
+#   CODE_SIGNING_PASSWORD  the .pfx password
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths: [version.txt]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      HAS_CERT: ${{ secrets.CODE_SIGNING_PFX != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read version
+        id: v
+        shell: pwsh
+        run: |
+          $v = (Get-Content version.txt -Raw).Trim()
+          $exists = [bool](git ls-remote --tags origin "refs/tags/v$v")
+          "version=$v" >> $env:GITHUB_OUTPUT
+          "exists=$($exists.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          if ($exists) { Write-Host "v$v is already released - nothing to do." }
+
+      - name: Sign scripts
+        if: steps.v.outputs.exists == 'false' && env.HAS_CERT == 'true'
+        shell: pwsh
+        env:
+          PFX_B64: ${{ secrets.CODE_SIGNING_PFX }}
+          PFX_PASSWORD: ${{ secrets.CODE_SIGNING_PASSWORD }}
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'codesign.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:PFX_B64))
+          try {
+            $cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($pfx, $env:PFX_PASSWORD, 'Exportable,PersistKeySet')
+            $files = @(Get-Item ITToolkit.ps1, install.ps1) + @(Get-ChildItem core, modules, Tools -Filter *.ps1 -Recurse)
+            foreach ($f in $files) {
+              $r = Set-AuthenticodeSignature -FilePath $f.FullName -Certificate $cert -TimestampServer 'http://timestamp.digicert.com' -HashAlgorithm SHA256
+              if ($r.Status -ne 'Valid') { throw "Signing failed for $($f.Name): $($r.StatusMessage)" }
+              Write-Host "Signed $($f.Name)"
+            }
+          } finally { Remove-Item $pfx -Force -ErrorAction SilentlyContinue }
+
+      - name: Build zip and release
+        if: steps.v.outputs.exists == 'false'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.v.outputs.version }}
+        run: |
+          $stage = Join-Path $env:RUNNER_TEMP 'it-toolkit'
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+          Copy-Item ITToolkit.ps1, install.ps1, version.txt, README.md, CHANGELOG.md, LICENSE, THIRD_PARTY_NOTICES.md -Destination $stage
+          Copy-Item core, modules, data, Tools -Destination $stage -Recurse
+          Compress-Archive -Path $stage -DestinationPath ITToolkit.zip -Force
+          $notes = "IT Toolkit $env:VERSION"
+          $cl = Get-Content CHANGELOG.md -Raw
+          if ($cl -match "(?s)## $([regex]::Escape($env:VERSION))\s*(.*?)(\r?\n## |\z)") { $notes = $Matches[1].Trim() }
+          if ($env:HAS_CERT -eq 'true') { $notes += "`n`nAll PowerShell scripts in ITToolkit.zip are Authenticode-signed." }
+          $notes += "`n`nInstall or update: ``irm hype-it-za.github.io/it-toolkit | iex``"
+          Set-Content -Path notes.md -Value $notes -Encoding UTF8
+          gh release create "v$env:VERSION" ITToolkit.zip --title "IT Toolkit $env:VERSION" --notes-file notes.md --target $env:GITHUB_SHA

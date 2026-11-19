@@ -298,6 +298,7 @@ function Invoke-Tool($tool) {
         $params[$parts[0]] = $val
     }
     if ($tool.Tab -eq 'Tools') { Add-Recent $tool.Name }
+    if ($tool.SaveSessionLog -and $script:LogLines.Count) { try { [void](Save-Log 'session') } catch {} }
     if ($tool.Launch) {
         try { & $tool.Action $params } catch { Add-LogLine 'ERROR' "$($tool.Name): $($_.Exception.Message)" }
         return
@@ -375,6 +376,51 @@ function Invoke-AppAction([ValidateSet('Install', 'Uninstall', 'Check', 'Upgrade
             Start-UiTask -Name "$verb $($ids.Count) app(s)" -Code $code -Params @{ Ids = $ids; Action = $Action }
         }
     }
+}
+
+# ---------------- Saved setups (apps + tweaks) ----------------
+function Get-SetupDir { $d = Join-Path $Config.DataDir 'Setups'; New-Item -ItemType Directory -Path $d -Force | Out-Null; $d }
+function Export-Setup {
+    if (-not $script:SelectedApps.Count -and -not $script:SelectedTweaks.Count) { Add-LogLine 'WARN' 'Tick some apps (Install tab) and / or tweaks (Tweaks tab) first, then export.'; return }
+    $path = $null
+    try {
+        $dlg = New-Object Windows.Forms.SaveFileDialog
+        $dlg.Filter = 'IT Toolkit setup (*.json)|*.json'; $dlg.InitialDirectory = Get-SetupDir; $dlg.FileName = 'my-setup.json'
+        if ($dlg.ShowDialog($form) -eq 'OK') { $path = $dlg.FileName } else { return }
+    } catch {
+        $name = Show-InputDialog 'Export setup' 'Setup name (saved in C:\ProgramData\ITToolkit\Setups)' 'my-setup'
+        if (-not $name) { return }
+        $path = Join-Path (Get-SetupDir) (($name -replace '[^\w\- ]', '') + '.json')
+    }
+    $obj = [ordered]@{
+        name = [IO.Path]::GetFileNameWithoutExtension($path); created = (Get-Date -Format 's'); createdOn = $env:COMPUTERNAME
+        apps = @($script:SelectedApps); tweaks = @($script:SelectedTweaks)
+    }
+    $obj | ConvertTo-Json -Depth 3 | Set-Content -Path $path -Encoding UTF8
+    Add-LogLine 'OK' "Setup saved: $path ($($obj.apps.Count) apps, $($obj.tweaks.Count) tweaks). Use it on another PC with Import setup, or headless: -Setup '<file or URL>'."
+}
+function Import-Setup {
+    $path = $null
+    try {
+        $dlg = New-Object Windows.Forms.OpenFileDialog
+        $dlg.Filter = 'IT Toolkit setup (*.json)|*.json|All files (*.*)|*.*'; $dlg.InitialDirectory = Get-SetupDir
+        if ($dlg.ShowDialog($form) -eq 'OK') { $path = $dlg.FileName } else { return }
+    } catch {
+        $path = Show-InputDialog 'Import setup' 'Path or URL of a setup .json file' (Get-SetupDir)
+        if (-not $path) { return }
+    }
+    try {
+        $data = if ($path -match '^https?://') { Invoke-RestMethod -Uri $path -TimeoutSec 20 } else { Get-Content -Path $path -Raw | ConvertFrom-Json }
+        if ($data -is [string]) { $data = $data | ConvertFrom-Json }
+    } catch { Add-LogLine 'ERROR' "Could not read setup: $($_.Exception.Message)"; return }
+    $apps = @($data.apps | Where-Object { $_ }); $tweaks = @($data.tweaks | Where-Object { $_ })
+    foreach ($a in $apps) { [void]$script:SelectedApps.Add([string]$a) }
+    $unknown = @()
+    foreach ($t in $tweaks) { if ($script:Tweaks.Name -contains $t) { [void]$script:SelectedTweaks.Add([string]$t) } else { $unknown += $t } }
+    Add-LogLine 'OK' "Setup '$($data.name)' loaded: $($apps.Count) apps ticked on the Install tab, $($tweaks.Count - $unknown.Count) tweaks ticked on the Tweaks tab. Review them, then click Install / Apply."
+    if ($unknown) { Add-LogLine 'WARN' ("Tweaks not found in this version: " + ($unknown -join ', ')) }
+    $script:CurrentCategory['Install'] = 'Selected'
+    Build-Nav; Show-Content
 }
 
 # =====================================================================
@@ -738,7 +784,9 @@ function Build-ActionBar {
                 Add-LogLine 'OK' "Saved $($Settings.SavedPreset.Count) apps as 'My saved preset'."
                 if (-not $script:PresetCombo.Items.Contains('My saved preset')) { [void]$script:PresetCombo.Items.Add('My saved preset') }
             })
-            $actionBar.Controls.AddRange(@($b1, $b2, $b3, $b4, $b5, $combo, $b6))
+            $b7 = New-Button 'Export setup' 0; $b7.Add_Click({ Export-Setup })
+            $b8 = New-Button 'Import setup' 0; $b8.Add_Click({ Import-Setup })
+            $actionBar.Controls.AddRange(@($b1, $b2, $b3, $b4, $b5, $combo, $b6, $b7, $b8))
             $actionBar.Visible = $true
         }
         'Tweaks' {
@@ -748,7 +796,9 @@ function Build-ActionBar {
             $b4 = New-Button 'Select recommended' 0; $b4.Add_Click({ foreach ($t in ($script:Tweaks | Where-Object Recommended)) { [void]$script:SelectedTweaks.Add($t.Name) }; Show-Content })
             $b5 = New-Button 'Clear selection' 0; $b5.Add_Click({ $script:SelectedTweaks.Clear(); Show-Content })
             $b6 = New-Button 'Create restore point' 0; $b6.Add_Click({ Start-UiTask -Name 'Create restore point' -Code "[void](New-ToolkitRestorePoint 'IT Toolkit - manual')" })
-            $actionBar.Controls.AddRange(@($b1, $b2, $b3, $b4, $b5, $b6))
+            $b7 = New-Button 'Export setup' 0; $b7.Add_Click({ Export-Setup })
+            $b8 = New-Button 'Import setup' 0; $b8.Add_Click({ Import-Setup })
+            $actionBar.Controls.AddRange(@($b1, $b2, $b3, $b4, $b5, $b6, $b7, $b8))
             $actionBar.Visible = $true
         }
         default { $actionBar.Visible = $false }

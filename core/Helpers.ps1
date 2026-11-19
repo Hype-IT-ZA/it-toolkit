@@ -367,3 +367,131 @@ function Send-Webhook([string]$Url, [string]$Text) {
     } else { @{ text = $Text } }
     Invoke-RestMethod -Uri $Url -Method Post -ContentType 'application/json' -Body ($body | ConvertTo-Json) -TimeoutSec 10 | Out-Null
 }
+
+# ---------------- Manufacturer driver tools (Dell / HP / Lenovo) ----------------
+function Find-ProgramFile([string[]]$Relative) {
+    foreach ($r in $Relative) {
+        foreach ($base in @($env:ProgramFiles, ${env:ProgramFiles(x86)}, 'C:\SWSetup')) {
+            if (-not $base) { continue }
+            $f = Join-Path $base $r
+            if (Test-Path $f) { return $f }
+        }
+    }
+    $null
+}
+
+function Invoke-OemUpdates([ValidateSet('Scan', 'Install')][string]$Mode) {
+    $make = (Get-CimInstance Win32_ComputerSystem).Manufacturer
+    Log "Manufacturer: $make"
+    New-Item -ItemType Directory -Path $ITK_ReportDir -Force | Out-Null
+    if ($make -match 'Dell') {
+        $exe = Find-ProgramFile 'Dell\CommandUpdate\dcu-cli.exe'
+        if (-not $exe) { Log 'Installing Dell Command | Update...'; Invoke-WingetApps -Ids @('Dell.CommandUpdate.Universal') -Action Install; $exe = Find-ProgramFile 'Dell\CommandUpdate\dcu-cli.exe' }
+        if (-not $exe) { Log 'Dell Command | Update could not be installed. Try Windows Update drivers instead.' 'ERROR'; return }
+        if ($Mode -eq 'Scan') { & $exe /scan -silent } else { & $exe /applyUpdates -reboot=disable -silent }
+        $code = $LASTEXITCODE
+        $msg = switch ($code) { 0 { 'done' } 1 { 'done - restart required' } 5 { 'done - restart required' } 500 { 'no updates found' } default { "exit code $code" } }
+        Log "Dell Command | Update: $msg" $(if ($code -in 0, 1, 5, 500) { 'OK' } else { 'WARN' })
+    }
+    elseif ($make -match 'HP|Hewlett') {
+        $exe = Get-ChildItem 'C:\SWSetup', "$env:ProgramFiles\HP", "${env:ProgramFiles(x86)}\HP" -Filter HPImageAssistant.exe -Recurse -Depth 3 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+        if (-not $exe) {
+            Log 'Installing HP Image Assistant...'
+            Invoke-WingetApps -Ids @('HP.ImageAssistant') -Action Install
+            $exe = Get-ChildItem 'C:\SWSetup', "$env:ProgramFiles\HP", "${env:ProgramFiles(x86)}\HP", "$env:ProgramData\Microsoft\WinGet" -Filter HPImageAssistant.exe -Recurse -Depth 4 -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+        }
+        if (-not $exe) { Log 'HP Image Assistant could not be found after install. Try Windows Update drivers instead.' 'ERROR'; return }
+        $report = Join-Path $ITK_ReportDir "HPIA_$(Get-Date -Format yyyyMMdd_HHmm)"
+        $action = if ($Mode -eq 'Scan') { 'List' } else { 'Install' }
+        $p = Start-Process -FilePath $exe -ArgumentList "/Operation:Analyze", "/Category:Drivers,Firmware,BIOS", "/Selection:All", "/Action:$action", "/Silent", "/Noninteractive", "/ReportFolder:`"$report`"" -Wait -PassThru
+        Log "HP Image Assistant finished (exit code $($p.ExitCode)). Report: $report" $(if ($p.ExitCode -in 0, 256, 3010) { 'OK' } else { 'WARN' })
+        Get-ChildItem $report -Filter *.json -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 | ForEach-Object {
+            try { (Get-Content $_.FullName -Raw | ConvertFrom-Json).HPIA.Recommendations | Select-Object Name, TargetVersion, ReferenceVersion, Comments | Format-Table -AutoSize } catch {}
+        }
+    }
+    elseif ($make -match 'Lenovo') {
+        $exe = Find-ProgramFile 'Lenovo\System Update\tvsu.exe'
+        if (-not $exe) { Log 'Installing Lenovo System Update...'; Invoke-WingetApps -Ids @('Lenovo.SystemUpdate') -Action Install; $exe = Find-ProgramFile 'Lenovo\System Update\tvsu.exe' }
+        if (-not $exe) { Log 'Lenovo System Update could not be installed. Try Windows Update drivers instead.' 'ERROR'; return }
+        $action = if ($Mode -eq 'Scan') { 'LIST' } else { 'INSTALL' }
+        $cmd = "/CM -search A -action $action -includerebootpackages 1,3,4 -noicon -noreboot -nolicense"
+        # System Update only accepts command-line mode when the same arguments are set as AdminCommandLine
+        foreach ($k in 'HKLM:\SOFTWARE\WOW6432Node\Lenovo\System Update\Preferences\UserSettings\General', 'HKLM:\SOFTWARE\Lenovo\System Update\Preferences\UserSettings\General') {
+            if (-not (Test-Path $k)) { New-Item -Path $k -Force | Out-Null }
+            Set-ItemProperty -Path $k -Name AdminCommandLine -Value $cmd
+        }
+        $p = Start-Process -FilePath $exe -ArgumentList $cmd -Wait -PassThru
+        Log "Lenovo System Update finished (exit code $($p.ExitCode)). Its log is under C:\ProgramData\Lenovo\SystemUpdate." 'OK'
+    }
+    else {
+        Log "No manufacturer tool for '$make'. Use 'Windows Update drivers' instead." 'WARN'
+    }
+}
+
+# ---------------- Blue screen stop codes ----------------
+$ITK_StopCodes = @{
+    '0x0000000a' = 'IRQL_NOT_LESS_OR_EQUAL|A driver or faulty RAM. Update drivers, then test memory.'
+    '0x00000019' = 'BAD_POOL_HEADER|A driver corrupting memory, or faulty RAM.'
+    '0x0000001a' = 'MEMORY_MANAGEMENT|Usually faulty RAM. Run a memory test.'
+    '0x0000001e' = 'KMODE_EXCEPTION_NOT_HANDLED|A driver crashed. Update or roll back recent drivers.'
+    '0x0000003b' = 'SYSTEM_SERVICE_EXCEPTION|A driver or system file. Update drivers and run SFC / DISM.'
+    '0x0000004e' = 'PFN_LIST_CORRUPT|Faulty RAM or a driver.'
+    '0x00000050' = 'PAGE_FAULT_IN_NONPAGED_AREA|Faulty RAM, a driver or antivirus. Test memory, update drivers.'
+    '0x00000077' = 'KERNEL_STACK_INPAGE_ERROR|Disk or cable problem. Check disk health.'
+    '0x0000007a' = 'KERNEL_DATA_INPAGE_ERROR|Disk, cable or RAM problem. Check disk health.'
+    '0x0000007e' = 'SYSTEM_THREAD_EXCEPTION_NOT_HANDLED|A driver crashed (often graphics). Update drivers.'
+    '0x0000007f' = 'UNEXPECTED_KERNEL_MODE_TRAP|Hardware fault, overheating or overclocking.'
+    '0x0000009c' = 'MACHINE_CHECK_EXCEPTION|CPU or motherboard hardware error.'
+    '0x0000009f' = 'DRIVER_POWER_STATE_FAILURE|A driver failed on sleep / wake. Update drivers, check BIOS.'
+    '0x000000be' = 'ATTEMPTED_WRITE_TO_READONLY_MEMORY|A faulty driver.'
+    '0x000000c2' = 'BAD_POOL_CALLER|A faulty driver.'
+    '0x000000c5' = 'DRIVER_CORRUPTED_EXPOOL|A faulty driver.'
+    '0x000000d1' = 'DRIVER_IRQL_NOT_LESS_OR_EQUAL|A faulty driver (often network or graphics).'
+    '0x000000ea' = 'THREAD_STUCK_IN_DEVICE_DRIVER|Graphics driver or graphics card.'
+    '0x000000ef' = 'CRITICAL_PROCESS_DIED|Corrupt system files or a failing disk. Run SFC / DISM, check disk.'
+    '0x000000f4' = 'CRITICAL_OBJECT_TERMINATION|Failing disk or storage driver.'
+    '0x000000fc' = 'ATTEMPTED_EXECUTE_OF_NOEXECUTE_MEMORY|A faulty driver or RAM.'
+    '0x00000101' = 'CLOCK_WATCHDOG_TIMEOUT|CPU problem, overclocking or BIOS. Update BIOS.'
+    '0x00000109' = 'CRITICAL_STRUCTURE_CORRUPTION|A driver, RAM or malware.'
+    '0x0000010e' = 'VIDEO_MEMORY_MANAGEMENT_INTERNAL|Graphics driver.'
+    '0x00000116' = 'VIDEO_TDR_FAILURE|Graphics driver or graphics card. Clean-install the graphics driver.'
+    '0x00000117' = 'VIDEO_TDR_TIMEOUT_DETECTED|Graphics driver or graphics card.'
+    '0x00000119' = 'VIDEO_SCHEDULER_INTERNAL_ERROR|Graphics driver.'
+    '0x00000124' = 'WHEA_UNCORRECTABLE_ERROR|Hardware error: CPU, RAM, overheating, overclocking or power.'
+    '0x0000012b' = 'FAULTY_HARDWARE_CORRUPTED_PAGE|Faulty RAM.'
+    '0x00000133' = 'DPC_WATCHDOG_VIOLATION|Storage driver or SSD firmware. Update chipset / storage drivers and SSD firmware.'
+    '0x00000139' = 'KERNEL_SECURITY_CHECK_FAILURE|A driver, RAM or corrupt system files.'
+    '0x00000144' = 'BUGCODE_USB3_DRIVER|USB 3 driver or a USB device.'
+    '0x00000154' = 'UNEXPECTED_STORE_EXCEPTION|Disk or storage driver problem.'
+    '0x000001a5' = 'USB_DRIPS_BLOCKER_SURPRISE_REMOVAL_LIVEDUMP|USB device or dock problem.'
+}
+function Get-StopCodeInfo([string]$Code) {
+    $c = '0x{0:x8}' -f [Convert]::ToUInt32(($Code -replace '^0x', ''), 16)
+    if ($ITK_StopCodes.ContainsKey($c)) { $p = $ITK_StopCodes[$c] -split '\|', 2; return [pscustomobject]@{ Code = $c; Name = $p[0]; Advice = $p[1] } }
+    [pscustomobject]@{ Code = $c; Name = 'Unknown'; Advice = 'Look up the stop code, or analyse the dump file.' }
+}
+
+# ---------------- Before / after snapshots ----------------
+function Get-SystemSnapshot {
+    $s = [ordered]@{}
+    $apps = [ordered]@{}
+    Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue |
+        Where-Object { $_.DisplayName -and -not $_.SystemComponent } | Sort-Object DisplayName | ForEach-Object { $apps[$_.DisplayName] = "$($_.DisplayVersion)" }
+    $s['Installed apps'] = $apps
+    $svc = [ordered]@{}; Get-Service | Sort-Object Name | ForEach-Object { $svc[$_.Name] = "$($_.StartType), $($_.Status)" }; $s['Services'] = $svc
+    $st = [ordered]@{}; Get-CimInstance Win32_StartupCommand -ErrorAction SilentlyContinue | ForEach-Object { $st["$($_.Name) ($($_.User))"] = $_.Command }; $s['Startup items'] = $st
+    $tk = [ordered]@{}; Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskPath -notlike '\Microsoft\*' -and $_.TaskName -notlike 'ITToolkit_*' } | ForEach-Object { $tk["$($_.TaskPath)$($_.TaskName)"] = "$($_.State)" }; $s['Scheduled tasks'] = $tk
+    $pr = [ordered]@{}; Get-Printer -ErrorAction SilentlyContinue | ForEach-Object { $pr[$_.Name] = "$($_.DriverName) on $($_.PortName)" }; $s['Printers'] = $pr
+    $nw = [ordered]@{}; Get-NetIPConfiguration -ErrorAction SilentlyContinue | ForEach-Object { $nw[$_.InterfaceAlias] = "IP $($_.IPv4Address.IPAddress -join ',') GW $($_.IPv4DefaultGateway.NextHop -join ',') DNS $((($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses) -join ',')" }; $s['Network'] = $nw
+    $dr = [ordered]@{}; Get-CimInstance Win32_PnPSignedDriver -ErrorAction SilentlyContinue | Where-Object { $_.DriverProviderName -and $_.DriverProviderName -notmatch '^Microsoft' -and $_.DeviceName } | ForEach-Object { $dr[$_.DeviceName] = "$($_.DriverVersion)" }; $s['Drivers (third-party)'] = $dr
+    $ad = [ordered]@{}; try { Get-LocalGroupMember -Group Administrators -ErrorAction Stop | ForEach-Object { $ad[$_.Name] = $_.ObjectClass } } catch {}; $s['Local administrators'] = $ad
+    $fw = [ordered]@{}; Get-NetFirewallProfile -ErrorAction SilentlyContinue | ForEach-Object { $fw[$_.Name] = "Enabled: $($_.Enabled)" }; $s['Firewall'] = $fw
+    $ot = [ordered]@{}
+    $ot['Pending reboot'] = "$(Test-PendingReboot)"
+    $ot['Power plan'] = "$((powercfg /getactivescheme) -replace '^.*\(|\)$', '')"
+    $h = "$env:windir\System32\drivers\etc\hosts"; if (Test-Path $h) { $ot['Hosts file (hash)'] = (Get-FileHash $h -Algorithm SHA256).Hash.Substring(0, 16) }
+    try { $mp = Get-MpComputerStatus -ErrorAction Stop; $ot['Defender real-time'] = "$($mp.RealTimeProtectionEnabled)" } catch {}
+    $sys = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='$env:SystemDrive'"; $ot['System drive free'] = Format-Size $sys.FreeSpace
+    $s['Other'] = $ot
+    [pscustomobject]@{ Computer = $env:COMPUTERNAME; Taken = (Get-Date -Format 's'); Sections = $s }
+}
