@@ -1,0 +1,151 @@
+<# <html lang="en"><head><meta charset="utf-8">
+<!--
+  This file is BOTH a web page and a PowerShell script.
+  PowerShell skips everything between the comment markers, so `irm ... | iex` runs install.ps1.
+  Browsers show the page. Built by .github/workflows/pages.yml from site/head.html + install.ps1 + site/tail.html.
+  Rule for editing: never write the two characters "hash" + "greater-than" next to each other in head.html.
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IT Toolkit - Windows support toolbox</title>
+<meta name="description" content="Free, open-source Windows support toolbox: 110+ tools, 249 apps, 75 undoable tweaks. One PowerShell command.">
+<style>
+:root{--bg:#f3f4f7;--surface:#ffffff;--card:#ffffff;--border:#dde1e8;--text:#1d2330;--muted:#5d6878;--accent:#2563eb;--accent-hover:#1d4fc4;--link:#1d4fc4;--code:#0f1115;--code-text:#e7e9ee;--ok:#15803d;--warn:#b45309}
+html[data-theme=dark]{--bg:#15171c;--surface:#1b1e24;--card:#1f2229;--border:#353b47;--text:#e7e9ee;--muted:#98a1b0;--accent:#2563eb;--accent-hover:#1d4fc4;--link:#60a5fa;--code:#0b0d11;--code-text:#e7e9ee;--ok:#4ade80;--warn:#fbbf24}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-size:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",system-ui,-apple-system,sans-serif}
+.page{font-size:16px;line-height:1.55}
+a{color:var(--link)}a:hover{color:var(--accent-hover)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+header.top{background:var(--surface);border-bottom:1px solid var(--border)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:19px;color:var(--text);text-decoration:none}
+.brand svg{flex:none}
+.ver{font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--border);padding:2px 8px;border-radius:999px}
+.nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.nav a{font-size:14px;text-decoration:none}
+.switch{display:flex;align-items:center;gap:10px;min-height:44px;background:none;border:0;color:var(--muted);font:inherit;font-size:14px;cursor:pointer;padding:0 4px}
+.track{width:46px;height:24px;border-radius:12px;background:#8a93a2;position:relative;display:block}
+html[data-theme=dark] .track{background:var(--accent)}
+.knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+html[data-theme=dark] .knob{left:25px}
+.hero{padding:56px 0 40px}
+.hero h1{font-size:40px;line-height:1.15;margin:0 0 12px;letter-spacing:-.5px}
+.hero p.lead{font-size:18px;color:var(--muted);margin:0 0 28px;max-width:720px}
+.cmd{display:flex;align-items:stretch;background:var(--code);border:1px solid var(--border);border-radius:6px;overflow:hidden;max-width:760px}
+.cmd code{flex:1;min-width:0;padding:16px 18px;color:var(--code-text);font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:16px;white-space:nowrap;overflow-x:auto}
+.cmd button{flex:none;border:0;background:var(--accent);color:#fff;font:inherit;font-size:14px;font-weight:600;padding:0 22px;cursor:pointer;min-height:48px}
+.cmd button:hover{background:var(--accent-hover)}
+.cmd.small code{font-size:13px;padding:12px 14px}
+.cmd.small button{min-height:42px;padding:0 16px;font-size:13px}
+.note{font-size:14px;color:var(--muted);margin:12px 0 0;max-width:760px}
+.note b{color:var(--text)}
+section{padding:36px 0;border-top:1px solid var(--border)}
+section h2{font-size:24px;margin:0 0 6px}
+section p.sub{color:var(--muted);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px}
+.card h3{margin:0 0 4px;font-size:17px}
+.card .big{font-size:28px;font-weight:700;color:var(--link);line-height:1.2}
+.card p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px}
+ul.ticks{margin:0;padding:0;list-style:none}
+ul.ticks li{padding:6px 0 6px 26px;position:relative;font-size:15px}
+ul.ticks li::before{content:"";position:absolute;left:4px;top:13px;width:10px;height:6px;border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg)}
+pre.block{background:var(--code);color:var(--code-text);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin:0;overflow:auto;font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:13px;line-height:1.6}
+pre.block .c{color:#8b949e}
+details{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-top:14px}
+summary{cursor:pointer;padding:14px 18px;font-weight:600;min-height:44px}
+details pre.block{border:0;border-top:1px solid var(--border);border-radius:0 0 6px 6px;max-height:520px}
+.warnbox{border-left:0;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:16px 18px;font-size:15px}
+.warnbox b{color:var(--warn)}
+footer{padding:28px 0 40px;border-top:1px solid var(--border);font-size:14px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:600px){.hero{padding:36px 0 28px}.hero h1{font-size:30px}.cmd{flex-direction:column}.cmd button{min-height:44px}}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="top"><div class="wrap">
+  <a class="brand" href="https://github.com/Hype-IT-ZA/it-toolkit">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="1" y="1" width="26" height="26" rx="6" fill="#2563eb"></rect><path d="M8 10l5 4-5 4M15 19h6" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    IT Toolkit <span class="ver">v{{VERSION}}</span>
+  </a>
+  <div class="nav">
+    <a href="https://github.com/Hype-IT-ZA/it-toolkit">GitHub</a>
+    <a href="https://github.com/Hype-IT-ZA/it-toolkit/blob/main/CHANGELOG.md">Changelog</a>
+    <button class="switch" type="button" role="switch" aria-checked="false" id="themeSwitch"><span>Dark mode</span><span class="track"><span class="knob"></span></span></button>
+  </div>
+</div></header>
+
+<main>
+<div class="wrap hero">
+  <h1>The Windows support toolbox<br>you start with one command.</h1>
+  <p class="lead">Tools, app installs, tweaks and update policies in one dark / light window. Built for remote support in ScreenConnect Backstage, and works on any Windows PC.</p>
+  <div class="cmd" id="cmdMain"><code>irm hype-it-za.github.io/it-toolkit | iex</code><button type="button" data-copy="irm hype-it-za.github.io/it-toolkit | iex">Copy</button></div>
+  <p class="note">Paste into an <b>elevated PowerShell</b> window or the <b>Backstage PowerShell console</b>. It downloads the latest version to <code>C:\ProgramData\ITToolkit</code> and opens the toolkit. Run it again any time to update.</p>
+  <p class="note">Older PC that shows a TLS or SSL error? Use this instead:</p>
+  <div class="cmd small" style="margin-top:8px"><code>[Net.ServicePointManager]::SecurityProtocol='Tls12'; irm hype-it-za.github.io/it-toolkit | iex</code><button type="button" data-copy="[Net.ServicePointManager]::SecurityProtocol='Tls12'; irm hype-it-za.github.io/it-toolkit | iex">Copy</button></div>
+</div>
+
+<section><div class="wrap">
+  <h2>Four tabs, everything in one place</h2>
+  <p class="sub">Every task runs in the background, so the window never freezes, and the output is colour-coded.</p>
+  <div class="grid">
+    <div class="card"><div class="big">110+</div><h3>Tools</h3><p>System, network, disk cleanup, repair, Office and Teams, user session, security, printers, power and reports.</p></div>
+    <div class="card"><div class="big">249</div><h3>Install</h3><p>Tick apps and install, upgrade or uninstall them silently with winget. Presets included.</p></div>
+    <div class="card"><div class="big">75</div><h3>Tweaks</h3><p>Privacy, performance and Explorer tweaks. Restore point first, live status, and undo.</p></div>
+    <div class="card"><div class="big">13</div><h3>Updates</h3><p>Security-focused policy, stay on your Windows version, no driver updates, install now.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap cols">
+  <div>
+    <h2>Made for remote support</h2>
+    <ul class="ticks">
+      <li>Runs as SYSTEM in Backstage, with no Explorer needed</li>
+      <li>User-session tools and tweaks reach the signed-in user, not SYSTEM</li>
+      <li>HTML health check report and hardware / software inventory</li>
+      <li>Ticket notes summarise the session, ready to paste</li>
+      <li>Optional webhook to Discord, Slack or Teams</li>
+      <li>Favourites, recent tools and a PS&gt; prompt for anything else</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Safe by default</h2>
+    <ul class="ticks">
+      <li>Risky actions ask first and explain what could break</li>
+      <li>Cleanup only removes temp and cache files Windows rebuilds</li>
+      <li>A restore point is made before tweaks, and almost every tweak can be undone</li>
+      <li>Windows Update reset keeps the old folders as a backup</li>
+      <li>Logs and reports are saved in <code>C:\ProgramData\ITToolkit</code></li>
+    </ul>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>No window needed</h2>
+  <p class="sub">Run tools, installs and tweaks from a script or ScreenConnect's Commands tab. The exit code is 1 if anything logged an error.</p>
+<pre class="block"><span class="c"># load once</span>
+$itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
+
+&amp; $itk -List                                       <span class="c"># everything you can run</span>
+&amp; $itk -Run 'Disk space', 'Safe cleanup'           <span class="c"># run tools</span>
+&amp; $itk -Install Google.Chrome, 7zip.7zip           <span class="c"># winget IDs or app names</span>
+&amp; $itk -Tweak 'Show file extensions'               <span class="c"># add -Undo to revert</span>
+&amp; $itk -HealthCheck                                <span class="c"># HTML report</span></pre>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Know what you run</h2>
+  <div class="warnbox"><b>irm | iex runs code from the internet.</b> This page is the installer: PowerShell ignores the web page around it and runs the script below. Read it here or on GitHub before you use it on a client's PC.</div>
+  <details><summary>View the installer script</summary><pre class="block" id="psView"></pre></details>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>MIT licence. App catalog and tweak list based on Chris Titus Tech's <a href="https://github.com/ChrisTitusTech/winutil">WinUtil</a> (MIT).</span>
+  <span>Not affiliated with Chris Titus Tech, ConnectWise or Microsoft.</span>
+</div></footer>
+</div>
+<script type="text/plain" id="ps">#>
