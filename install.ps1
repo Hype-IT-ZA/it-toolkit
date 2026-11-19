@@ -4,12 +4,13 @@
 
     Open the GUI (elevated PowerShell or a ScreenConnect Backstage PowerShell console):
 
-        irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex
+        irm hype-it-za.github.io/it-toolkit | iex
+        (long form: irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex)
 
     Headless (no window) - pass the same options as ITToolkit.ps1:
 
-        & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1))) -Run 'Safe cleanup'
-        & ([scriptblock]::Create((irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1))) -HealthCheck
+        & ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -Run 'Safe cleanup'
+        & ([scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))) -HealthCheck
 
     What it does:
       1. Downloads the latest version of the repo from GitHub
