@@ -388,7 +388,7 @@ $script:DrawnUp = {
             foreach ($c in $navFlow.Controls) { $c.Invalidate() }
         }
         'tab' { Select-Tab $s.Tag.Tab }
-        'btn' { if ($s.Tag.OnClick) { & $s.Tag.OnClick } }
+        'btn' { if ($s.Tag.OnClick) { & $s.Tag.OnClick $s } }
         'toggle' { Set-Theme $(if ($script:ThemeName -eq 'Dark') { 'Light' } else { 'Dark' }) }
     }
 }
@@ -785,7 +785,7 @@ Set-Smooth $form
 $header = New-Object Windows.Forms.Panel; $header.Dock = 'Top'; $header.Height = 66; $header.Tag = 'header'
 $logo = New-Drawn 'logo' 36 36 @{} 'Surface'; $logo.Location = New-Object Drawing.Point(18, 15)
 $lblApp = New-Label $Config.AppName 64 11 $FontTitle 'text'
-$subText = if ($RunAs -match 'SYSTEM$') { "$env:COMPUTERNAME  -  running as SYSTEM" } else { "$env:COMPUTERNAME  -  $RunAs" }
+$subText = if ($RunAs -match 'SYSTEM$') { "$env:COMPUTERNAME  -  running as SYSTEM" } else { "Running as $RunAs" }
 if (-not $IsAdmin) { $subText += '  -  not elevated' }
 $lblSub = New-Label $subText 65 37 $FontSmall 'muted'
 $header.Controls.AddRange(@($logo, $lblApp, $lblSub))
@@ -986,7 +986,7 @@ function New-AppItem($app) {
     $c
 }
 function New-TweakItem($tw) {
-    $c = New-Drawn 'tweak' 420 78 @{ Data = $tw } 'Bg'
+    $c = New-Drawn 'tweak' 420 72 @{ Data = $tw } 'Bg'
     $c.Margin = New-Object Windows.Forms.Padding(0, 0, 12, 12)
     $tip = "$($tw.Description)`n`n$($tw.Category)"; if ($tw.Warning) { $tip += "`nCaution: $($tw.Warning)" }; if ($tw.NoUndo) { $tip += "`nCannot be undone automatically." }
     $ToolTip.SetToolTip($c, $tip)
@@ -1042,10 +1042,11 @@ function Get-NavItems {
 function Build-Nav {
     $navFlow.SuspendLayout()
     $old = @($navFlow.Controls); $navFlow.Controls.Clear(); $old | ForEach-Object { $_.Dispose() }
+    $navW = $navFlow.Width - [Windows.Forms.SystemInformation]::VerticalScrollBarWidth - 2
     $hdr = New-Label 'Categories' 6 0 $FontSmall 'muted'; $hdr.Margin = New-Object Windows.Forms.Padding(8, 0, 0, 8)
     $navFlow.Controls.Add($hdr)
     foreach ($item in (Get-NavItems)) {
-        $b = New-Drawn 'nav' 208 38 @{ Name = $item.Name; Count = $item.Count } 'Sidebar'
+        $b = New-Drawn 'nav' $navW 38 @{ Name = $item.Name; Count = $item.Count } 'Sidebar'
         $b.Margin = New-Object Windows.Forms.Padding(0, 0, 0, 2)
         $navFlow.Controls.Add($b)
     }
@@ -1057,41 +1058,47 @@ function Update-NavCounts {
     foreach ($c in $navFlow.Controls) { if ($c.Tag -is [hashtable] -and $c.Tag.Kind -eq 'nav' -and $counts.ContainsKey($c.Tag.Name) -and $c.Tag.Count -ne $counts[$c.Tag.Name]) { $c.Tag.Count = $counts[$c.Tag.Name]; $c.Invalidate() } }
 }
 
+# ---- Presets menu (Install tab) ----
+$presetMenu = New-Object Windows.Forms.ContextMenuStrip
+$presetMenu.ShowImageMargin = $false
+$presetMenu.Font = $FontUI
+$presetMenu.Add_Opening({
+    $presetMenu.Items.Clear()
+    $presetMenu.BackColor = TC 'Surface'; $presetMenu.ForeColor = TC 'Text'
+    $names = @($script:Presets.Keys)
+    if ($Settings.SavedPreset.Count) { $names += 'My saved preset' }
+    foreach ($n in $names) {
+        $ids = if ($n -eq 'My saved preset') { @($Settings.SavedPreset) } else { @($script:Presets[$n]) }
+        $mi = $presetMenu.Items.Add("$n  ($($ids.Count) apps)")
+        $mi.Tag = $n; $mi.ForeColor = TC 'Text'
+        $mi.Add_Click({
+            $name = [string]$this.Tag
+            $ids = if ($name -eq 'My saved preset') { $Settings.SavedPreset } else { $script:Presets[$name] }
+            foreach ($id in $ids) { [void]$script:SelectedApps.Add($id) }
+            Add-LogLine 'INFO' "Preset '$name' added to the selection ($(@($ids).Count) apps)."
+            $script:CurrentCategory['Install'] = 'Selected'
+            Build-Nav; Show-Content
+        })
+    }
+})
+
 # ---- Action bar per tab ----
 function Build-ActionBar {
     $actionBar.SuspendLayout()
     $old = @($actionBar.Controls); $actionBar.Controls.Clear(); $old | ForEach-Object { $_.Dispose() }
     switch ($script:CurrentTab) {
         'Install' {
-            $combo = New-Object Windows.Forms.ComboBox
-            $combo.DropDownStyle = 'DropDownList'; $combo.Width = 190; $combo.Margin = New-Object Windows.Forms.Padding(0, 4, 8, 8); $combo.Tag = 'input'; $combo.FlatStyle = 'Flat'
-            $combo.Font = $FontUI
-            [void]$combo.Items.Add('Add a preset...')
-            foreach ($k in $script:Presets.Keys) { [void]$combo.Items.Add($k) }
-            if ($Settings.SavedPreset.Count) { [void]$combo.Items.Add('My saved preset') }
-            $combo.SelectedIndex = 0
-            $script:PresetCombo = $combo
-            $combo.Add_SelectedIndexChanged({
-                if ($this.SelectedIndex -le 0) { return }
-                $name = [string]$this.SelectedItem
-                $ids = if ($name -eq 'My saved preset') { $Settings.SavedPreset } else { $script:Presets[$name] }
-                foreach ($id in $ids) { [void]$script:SelectedApps.Add($id) }
-                Add-LogLine 'INFO' "Preset '$name' added to the selection ($(@($ids).Count) apps)."
-                $script:CurrentCategory['Install'] = 'Selected'
-                Build-Nav; Show-Content
-                $this.SelectedIndex = 0
-            })
+            $presetBtn = New-IconButton 'Add a preset' 'E710' 'default' { param($b) $presetMenu.Show($b, 0, $b.Height + 2) }
             $actionBar.Controls.AddRange(@(
                 (New-IconButton 'Install / upgrade selected' 'E896' 'primary' { Invoke-AppAction Install })
                 (New-IconButton 'Uninstall selected' 'E74D' 'danger' { Invoke-AppAction Uninstall })
                 (New-IconButton 'Upgrade all apps' 'E898' 'default' { Invoke-AppAction UpgradeAll })
                 (New-IconButton 'Check installed' 'E930' 'default' { Invoke-AppAction Check })
                 (New-IconButton 'Clear selection' 'E894' 'default' { $script:SelectedApps.Clear(); Build-Nav; Show-Content })
-                $combo
+                $presetBtn
                 (New-IconButton 'Save as my preset' 'E74E' 'default' {
                     $Settings.SavedPreset = @($script:SelectedApps); Save-ToolkitSettings $Settings
                     Add-LogLine 'OK' "Saved $($Settings.SavedPreset.Count) apps as 'My saved preset'."
-                    if (-not $script:PresetCombo.Items.Contains('My saved preset')) { [void]$script:PresetCombo.Items.Add('My saved preset') }
                 })
                 (New-IconButton 'Export setup' 'E72D' 'default' { Export-Setup })
                 (New-IconButton 'Import setup' 'E8B5' 'default' { Import-Setup })
@@ -1329,6 +1336,13 @@ if ($UiTest) {
     Test-UiStep 'Select apps and tweaks' {
         [void]$script:SelectedApps.Add('7zip.7zip'); [void]$script:SelectedTweaks.Add('Show file extensions')
         Select-Tab 'Install'; & $render; Select-Tab 'Tweaks'; & $render
+    }
+    Test-UiStep 'Presets menu' {
+        Select-Tab 'Install'; $presetMenu.Show($form, 10, 10); [Windows.Forms.Application]::DoEvents()
+        if ($presetMenu.Items.Count -lt 1) { throw 'no presets listed' }
+        $presetMenu.Items[0].PerformClick(); $presetMenu.Close()
+        if ($script:SelectedApps.Count -lt 2) { throw 'preset did not tick any apps' }
+        & $render
     }
     Test-UiStep 'Favourite and recent' { $Settings.Favorites = @('Disk space'); $Settings.Recent = @('System summary'); Select-Tab 'Tools'; $script:CurrentCategory['Tools'] = 'Favourites'; Show-Content; & $render }
     Test-UiStep 'Resize (cards flow)' { foreach ($w in 1100, 1400, 1900) { $form.Width = $w; $form.PerformLayout(); Update-CardWidths; & $render } }
