@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.1
+
+- Tweaks tab: the list no longer redraws several times while tweak status is being checked. It now redraws once, when all results are in.
+
 ## 2.2.0
 
 - **Domain & Entra** (checks on the PC itself, no domain controller access needed): join status, the user's Entra sign-in (PRT) state, domain connection test, Group Policy results with an HTML report, Intune sync, Intune diagnostics bundle and Intune app errors.
