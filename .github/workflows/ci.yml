@@ -61,6 +61,14 @@ jobs:
           $w = @(Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning)
           Write-Host "$($w.Count) warning(s), no errors."
 
+      - name: Network fallback (when Get-NetIPConfiguration fails)
+        run: |
+          . .\core\Helpers.ps1
+          function Get-NetIPConfiguration { throw 'Exception setting "NetAdapter" (simulated)' }
+          $r = @(Get-IPConfig)
+          $r | ForEach-Object { [pscustomobject]@{ Adapter = $_.InterfaceAlias; Status = $_.NetAdapter.Status; IPv4 = ($_.IPv4Address.IPAddress -join ', '); Gateway = ($_.IPv4DefaultGateway.NextHop -join ', '); DNS = (($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses -join ', ') } } | Format-Table -AutoSize | Out-String | Write-Host
+          if (-not ($r | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })) { throw 'Fallback found no connected adapter with a gateway' }
+
       - name: Headless - list everything
         run: .\ITToolkit.ps1 -List
 
