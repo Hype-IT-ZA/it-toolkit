@@ -15,7 +15,8 @@ Register-Tool 'Network' 'Public IP' 'Internet-facing IP address' {
     try { Log ('Public IP: ' + (Invoke-RestMethod -Uri 'https://api.ipify.org' -TimeoutSec 10)) 'OK' } catch { Log "Could not reach the internet: $($_.Exception.Message)" 'ERROR' }
 }
 Register-Tool 'Network' 'Speed test' 'Download speed and latency (Cloudflare)' {
-    $ping = Test-Connection -ComputerName 1.1.1.1 -Count 4 -ErrorAction SilentlyContinue
+    $pingTarget = '1.1.1.1'
+    $ping = Test-Connection -ComputerName $pingTarget -Count 4 -ErrorAction SilentlyContinue
     if ($ping) { Log ('Latency to 1.1.1.1: {0:N0} ms average' -f ($ping | Measure-Object ResponseTime -Average).Average) }
     $bytes = 25MB
     Log 'Downloading 25 MB test file...'
