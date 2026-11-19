@@ -80,7 +80,7 @@ Register-Tool 'Reports' 'Health check report' 'Runs 15+ checks and saves an HTML
     $sections = @(
         @{ Title = 'System'; Rows = @($sysRows.GetEnumerator() | ForEach-Object { [pscustomobject]@{ Item = $_.Key; Value = $_.Value } }) }
         @{ Title = 'Drives'; Rows = @(Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | ForEach-Object { [pscustomobject]@{ Drive = $_.DeviceID; Label = $_.VolumeName; Size = (Format-Size $_.Size); Free = (Format-Size $_.FreeSpace) } }) }
-        @{ Title = 'Network'; Rows = @(Get-NetIPConfiguration -ErrorAction SilentlyContinue | Where-Object { $_.NetAdapter.Status -eq 'Up' } | ForEach-Object { [pscustomobject]@{ Adapter = $_.InterfaceAlias; IPv4 = ($_.IPv4Address.IPAddress -join ', '); Gateway = ($_.IPv4DefaultGateway.NextHop -join ', '); DNS = (($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses -join ', ') } }) }
+        @{ Title = 'Network'; Rows = @(Get-IPConfig | Where-Object { $_.NetAdapter.Status -eq 'Up' } | ForEach-Object { [pscustomobject]@{ Adapter = $_.InterfaceAlias; IPv4 = ($_.IPv4Address.IPAddress -join ', '); Gateway = ($_.IPv4DefaultGateway.NextHop -join ', '); DNS = (($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses -join ', ') } }) }
         @{ Title = 'Top processes by memory'; Rows = @(Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First 10 | ForEach-Object { [pscustomobject]@{ Process = $_.Name; PID = $_.Id; RAM = (Format-Size $_.WorkingSet64) } }) }
         @{ Title = 'Recent errors (24h)'; Rows = @($errs | Select-Object -First 15 | ForEach-Object { [pscustomobject]@{ Time = $_.TimeCreated; Log = $_.LogName; Source = $_.ProviderName; Id = $_.Id; Message = (("$($_.Message)" -split "`n")[0]) } }) }
         @{ Title = 'Installed software'; Rows = @(Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -and -not $_.SystemComponent } | Sort-Object DisplayName -Unique | ForEach-Object { [pscustomobject]@{ Name = $_.DisplayName; Version = $_.DisplayVersion; Publisher = $_.Publisher } }) }
@@ -97,7 +97,7 @@ Register-Tool 'Reports' 'Health check report' 'Runs 15+ checks and saves an HTML
 Register-Tool 'Reports' 'Inventory export' 'Hardware + software CSV for asset records' {
     $os = Get-CimInstance Win32_OperatingSystem; $cs = Get-CimInstance Win32_ComputerSystem; $bios = Get-CimInstance Win32_BIOS
     $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-    $net = Get-NetIPConfiguration -ErrorAction SilentlyContinue | Where-Object IPv4DefaultGateway | Select-Object -First 1
+    $net = Get-IPConfig | Where-Object IPv4DefaultGateway | Select-Object -First 1
     $disks = (Get-PhysicalDisk -ErrorAction SilentlyContinue | ForEach-Object { "$($_.FriendlyName) $([math]::Round($_.Size / 1GB))GB $($_.MediaType)" }) -join '; '
     $row = [pscustomobject]@{
         Computer = $env:COMPUTERNAME; Domain = $cs.Domain; Manufacturer = $cs.Manufacturer; Model = $cs.Model; Serial = $bios.SerialNumber

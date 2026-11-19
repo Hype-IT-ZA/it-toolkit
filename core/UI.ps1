@@ -157,7 +157,7 @@ $OsInfo    = Get-CimInstance Win32_OperatingSystem
 $OsVersion = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).DisplayVersion
 $ConsoleUser = Get-ConsoleUser; if (-not $ConsoleUser) { $ConsoleUser = 'nobody signed in' }
 $MainIP = ''
-try { $MainIP = (Get-NetIPConfiguration -ErrorAction Stop | Where-Object IPv4DefaultGateway | Select-Object -First 1).IPv4Address.IPAddress | Select-Object -First 1 } catch {}
+try { $MainIP = (Get-IPConfig | Where-Object IPv4DefaultGateway | Select-Object -First 1).IPv4Address.IPAddress | Select-Object -First 1 } catch {}
 if (-not $MainIP) { $MainIP = 'no network' }
 
 # =====================================================================

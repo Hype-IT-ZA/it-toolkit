@@ -290,6 +290,27 @@ function Get-OfficeC2R {
 }
 
 # ---------------- HTML reports ----------------
+# Get-NetIPConfiguration fails on some PCs (adapters that appear twice, e.g. some VPN / Hyper-V setups) with
+# 'Exception setting "NetAdapter"'. This returns the same shape and falls back to the underlying cmdlets.
+function Get-IPConfig {
+    try { return @(Get-NetIPConfiguration -ErrorAction Stop) } catch {}
+    $adapters = @{}; foreach ($a in @(Get-NetAdapter -ErrorAction SilentlyContinue)) { if (-not $adapters.ContainsKey([int]$a.ifIndex)) { $adapters[[int]$a.ifIndex] = $a } }
+    $ips = @(Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue | Where-Object { $_.IPAddress -notlike '169.254.*' -and $_.InterfaceAlias -notlike 'Loopback*' })
+    $routes = @(Get-NetRoute -DestinationPrefix '0.0.0.0/0' -ErrorAction SilentlyContinue)
+    $dns = @(Get-DnsClientServerAddress -ErrorAction SilentlyContinue)
+    foreach ($g in ($ips | Group-Object InterfaceIndex)) {
+        $idx = [int]$g.Name
+        [pscustomobject]@{
+            InterfaceAlias     = $g.Group[0].InterfaceAlias
+            InterfaceIndex     = $idx
+            IPv4Address        = @($g.Group)
+            IPv4DefaultGateway = @($routes | Where-Object InterfaceIndex -eq $idx)
+            DNSServer          = @($dns | Where-Object InterfaceIndex -eq $idx)
+            NetAdapter         = $adapters[$idx]
+        }
+    }
+}
+
 function ConvertTo-HtmlSafe([string]$Text) { [System.Net.WebUtility]::HtmlEncode($Text) }
 
 function ConvertTo-ReportTable($Rows) {
@@ -484,7 +505,7 @@ function Get-SystemSnapshot {
     $st = [ordered]@{}; Get-CimInstance Win32_StartupCommand -ErrorAction SilentlyContinue | ForEach-Object { $st["$($_.Name) ($($_.User))"] = $_.Command }; $s['Startup items'] = $st
     $tk = [ordered]@{}; Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskPath -notlike '\Microsoft\*' -and $_.TaskName -notlike 'ITToolkit_*' } | ForEach-Object { $tk["$($_.TaskPath)$($_.TaskName)"] = "$($_.State)" }; $s['Scheduled tasks'] = $tk
     $pr = [ordered]@{}; Get-Printer -ErrorAction SilentlyContinue | ForEach-Object { $pr[$_.Name] = "$($_.DriverName) on $($_.PortName)" }; $s['Printers'] = $pr
-    $nw = [ordered]@{}; Get-NetIPConfiguration -ErrorAction SilentlyContinue | ForEach-Object { $nw[$_.InterfaceAlias] = "IP $($_.IPv4Address.IPAddress -join ',') GW $($_.IPv4DefaultGateway.NextHop -join ',') DNS $((($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses) -join ',')" }; $s['Network'] = $nw
+    $nw = [ordered]@{}; Get-IPConfig | ForEach-Object { $nw[$_.InterfaceAlias] = "IP $($_.IPv4Address.IPAddress -join ',') GW $($_.IPv4DefaultGateway.NextHop -join ',') DNS $((($_.DNSServer | Where-Object AddressFamily -eq 2).ServerAddresses) -join ',')" }; $s['Network'] = $nw
     $dr = [ordered]@{}; Get-CimInstance Win32_PnPSignedDriver -ErrorAction SilentlyContinue | Where-Object { $_.DriverProviderName -and $_.DriverProviderName -notmatch '^Microsoft' -and $_.DeviceName } | ForEach-Object { $dr[$_.DeviceName] = "$($_.DriverVersion)" }; $s['Drivers (third-party)'] = $dr
     $ad = [ordered]@{}; try { Get-LocalGroupMember -Group Administrators -ErrorAction Stop | ForEach-Object { $ad[$_.Name] = $_.ObjectClass } } catch {}; $s['Local administrators'] = $ad
     $fw = [ordered]@{}; Get-NetFirewallProfile -ErrorAction SilentlyContinue | ForEach-Object { $fw[$_.Name] = "Enabled: $($_.Enabled)" }; $s['Firewall'] = $fw

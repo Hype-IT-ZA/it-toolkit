@@ -1,6 +1,6 @@
 # Network
 Register-Tool 'Network' 'IP configuration' 'Adapters, IPs, gateways, DNS' {
-    Get-NetIPConfiguration | ForEach-Object {
+    Get-IPConfig | ForEach-Object {
         [pscustomobject]@{
             Adapter = $_.InterfaceAlias; Status = $_.NetAdapter.Status
             IPv4 = ($_.IPv4Address.IPAddress -join ', '); Gateway = ($_.IPv4DefaultGateway.NextHop -join ', ')
@@ -50,7 +50,7 @@ Register-Tool 'Network' 'Set DNS servers' 'Cloudflare, Google, Quad9, OpenDNS, A
     }
     $choice = ($P.Provider -replace '[^A-Za-z0-9]', '').ToLower()
     if ($choice -ne 'dhcp' -and -not $sets.ContainsKey($choice)) { Log "Unknown provider '$($P.Provider)'. Use one of: $(($sets.Keys | Sort-Object) -join ', '), dhcp" 'ERROR'; return }
-    foreach ($a in (Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })) {
+    foreach ($a in (Get-IPConfig | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' })) {
         if ($choice -eq 'dhcp') { Set-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -ResetServerAddresses; Log "$($a.InterfaceAlias): DNS reset to automatic (DHCP)" 'OK' }
         else { Set-DnsClientServerAddress -InterfaceIndex $a.InterfaceIndex -ServerAddresses $sets[$choice]; Log "$($a.InterfaceAlias): DNS set to $($sets[$choice] -join ', ')" 'OK' }
     }
@@ -79,7 +79,7 @@ Register-Tool 'Network' 'Active connections' 'Established TCP connections by pro
 }
 Register-Tool 'Network' 'Proxy settings' 'WinHTTP proxy configuration' { netsh winhttp show proxy }
 Register-Tool 'Network' 'Network scan' 'Finds devices on the local network (IP, name, MAC, likely type)' {
-    $cfg = Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' } | Select-Object -First 1
+    $cfg = Get-IPConfig | Where-Object { $_.IPv4DefaultGateway -and $_.NetAdapter.Status -eq 'Up' } | Select-Object -First 1
     if (-not $cfg) { Log 'No connected network with a gateway.' 'ERROR'; return }
     $myIp = @($cfg.IPv4Address)[0]
     $prefix = [int]$myIp.PrefixLength
