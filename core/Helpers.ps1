@@ -311,12 +311,12 @@ function ConvertTo-ReportTable($Rows) {
 
 function New-HtmlReport {
     param([string]$Title, [string]$Subtitle, $Checks, $Sections, [string]$Path)
-    $checks = @($Checks)
-    $pass = @($checks | Where-Object Status -eq 'Pass').Count
-    $warn = @($checks | Where-Object Status -eq 'Warn').Count
-    $fail = @($checks | Where-Object Status -eq 'Fail').Count
+    $checkList = @($Checks | ForEach-Object { $_ })
+    $pass = @($checkList | Where-Object Status -eq 'Pass').Count
+    $warn = @($checkList | Where-Object Status -eq 'Warn').Count
+    $fail = @($checkList | Where-Object Status -eq 'Fail').Count
     $sb = New-Object Text.StringBuilder
-    foreach ($c in $checks) {
+    foreach ($c in $checkList) {
         $cls = $c.Status.ToLower()
         [void]$sb.Append("<tr><td><span class=""pill $cls"">$(ConvertTo-HtmlSafe $c.Status)</span></td><td>$(ConvertTo-HtmlSafe $c.Check)</td><td>$(ConvertTo-HtmlSafe $c.Detail)</td></tr>")
     }
