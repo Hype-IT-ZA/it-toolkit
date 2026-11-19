@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.3.1
+
+- Install tab: presets open from an **Add a preset** button and menu (shows how many apps each adds) instead of a drop-down.
+- Sidebar items no longer slide under the scroll bar; tool and tweak cards are a little more compact.
+- Health check report: fixed "Argument types do not match", which stopped the HTML report being saved.
+- "Remove promoted bloat apps" now shows whether it is applied (the status check errored before).
+- Problem devices with no name show their device ID in the health check.
+- Task errors now include the line that failed, which makes bug reports easier to act on.
+
 ## 2.3.0
 
 - **New look.** The window is redrawn from scratch: every category has its own colour and a Windows Fluent icon, cards have rounded corners and reflow to fill the window, and the sidebar, tabs and buttons have icons. Pills read "Asks first", "Needs input", "Applied", "Recommended" and so on instead of capitals. Dark mode now also darkens the title bar and scroll bars, and a blue bar moves under Output while a task runs.
