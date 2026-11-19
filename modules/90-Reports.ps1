@@ -58,7 +58,7 @@ Register-Tool 'Reports' 'Health check report' 'Runs 15+ checks and saves an HTML
     Add-Check 'Unexpected shutdowns (7 days)' $(if ($crash.Count) { 'Warn' } else { 'Pass' }) "$($crash.Count) found"
     # Devices
     $badDev = @(Get-CimInstance Win32_PnPEntity | Where-Object { $_.ConfigManagerErrorCode -ne 0 })
-    Add-Check 'Device Manager' $(if ($badDev.Count) { 'Warn' } else { 'Pass' }) $(if ($badDev.Count) { "$($badDev.Count) problem device(s): " + (($badDev | Select-Object -First 3).Name -join ', ') } else { 'No problem devices' })
+    Add-Check 'Device Manager' $(if ($badDev.Count) { 'Warn' } else { 'Pass' }) $(if ($badDev.Count) { "$($badDev.Count) problem device(s): " + (($badDev | Select-Object -First 3 | ForEach-Object { if ($_.Name) { $_.Name } else { $_.DeviceID } }) -join ', ') } else { 'No problem devices' })
     # Activation
     $lic = Get-CimInstance SoftwareLicensingProduct -Filter "PartialProductKey IS NOT NULL AND ApplicationID='55c92734-d682-4d71-983e-d6ec3f16059f'" -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($lic) { Add-Check 'Windows activation' $(if ($lic.LicenseStatus -eq 1) { 'Pass' } else { 'Fail' }) $(if ($lic.LicenseStatus -eq 1) { 'Licensed' } else { "Not activated (status $($lic.LicenseStatus))" }) }

@@ -203,7 +203,13 @@ $Wrapper = {
             else { $buffer.Add($o) }
         }
         & $flush
-    } catch { & $flush; Log $_.Exception.Message 'ERROR' }
+    } catch {
+        & $flush
+        $where = ''
+        $ii = $_.InvocationInfo
+        if ($ii -and $ii.ScriptLineNumber) { $where = " (line $($ii.ScriptLineNumber): $(($ii.Line -replace '\s+', ' ').Trim() -replace '^(.{90}).+$', '$1...'))" }
+        Log ($_.Exception.Message + $where) 'ERROR'
+    }
 }
 
 function Start-ToolkitTask([string]$Name, [string]$Code, [hashtable]$Params = @{}) {
