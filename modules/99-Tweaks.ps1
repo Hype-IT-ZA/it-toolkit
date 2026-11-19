@@ -439,7 +439,7 @@ Register-Tweak 'Remove apps' 'Remove promoted bloat apps' 'Removes Candy Crush, 
             Get-AppxPackage -AllUsers -Name $n -ErrorAction SilentlyContinue | ForEach-Object { try { Remove-AppxPackage -Package $_.PackageFullName -AllUsers -ErrorAction Stop; Log "Removed $($_.Name)" } catch { Log "$($_.Name): $($_.Exception.Message)" 'WARN' } }
             Get-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue | Where-Object DisplayName -like $n | ForEach-Object { Remove-AppxProvisionedPackage -Online -PackageName $_.PackageName -ErrorAction SilentlyContinue | Out-Null }
         }
-    } -Test { -not (Get-AppxPackage -AllUsers -Name '*CandyCrush*', '*TikTok*', '*Disney*' -ErrorAction SilentlyContinue) }
+    } -Test { -not ('*CandyCrush*', '*TikTok*', '*Disney*' | ForEach-Object { Get-AppxPackage -AllUsers -Name $_ -ErrorAction SilentlyContinue }) }
 Register-Tweak 'Remove apps' 'Remove Widgets' 'Uninstalls the Widgets board and its web experience pack for all users' -NoUndo `
     -Warning 'Reinstall "Windows Web Experience Pack" from the Microsoft Store to get Widgets back.' -Apply {
         Get-Process *Widget* -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
