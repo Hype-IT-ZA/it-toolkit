@@ -30,10 +30,10 @@ html[data-theme=dark] .track{background:var(--accent)}
 .knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
 html[data-theme=dark] .knob{left:25px}
 .hero{padding-top:56px;padding-bottom:40px}
-.hero h1{font-size:40px;line-height:1.15;margin:0 0 12px;letter-spacing:-.5px}
+.hero h1{font-size:40px;line-height:1.15;margin:0 0 12px;letter-spacing:-.5px;max-width:760px;text-wrap:balance}
 .hero p.lead{font-size:18px;color:var(--muted);margin:0 0 28px;max-width:720px}
 .cmd{display:flex;align-items:stretch;background:var(--code);border:1px solid var(--border);border-radius:6px;overflow:hidden;max-width:760px}
-.cmd code{flex:1;min-width:0;padding:16px 18px;color:var(--code-text);font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:16px;white-space:nowrap;overflow-x:auto}
+.cmd code{flex:1;min-width:0;padding:16px 18px;color:var(--code-text);font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:16px;white-space:pre-wrap;overflow-wrap:anywhere}
 .cmd button{flex:none;border:0;background:var(--accent);color:#fff;font:inherit;font-size:14px;font-weight:600;padding:0 22px;cursor:pointer;min-height:48px}
 .cmd button:hover{background:var(--accent-hover)}
 .cmd.small code{font-size:13px;padding:12px 14px}
@@ -52,7 +52,7 @@ section p.sub{color:var(--muted);margin:0 0 22px}
 ul.ticks{margin:0;padding:0;list-style:none}
 ul.ticks li{padding:6px 0 6px 26px;position:relative;font-size:15px}
 ul.ticks li::before{content:"";position:absolute;left:4px;top:13px;width:10px;height:6px;border-left:2px solid var(--ok);border-bottom:2px solid var(--ok);transform:rotate(-45deg)}
-pre.block{background:var(--code);color:var(--code-text);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin:0;overflow:auto;font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:13px;line-height:1.6}
+pre.block{background:var(--code);color:var(--code-text);border:1px solid var(--border);border-radius:6px;padding:16px 18px;margin:0;overflow:auto;font-family:Consolas,"Cascadia Mono",ui-monospace,monospace;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
 pre.block .c{color:#8b949e}
 details{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-top:14px}
 summary{cursor:pointer;padding:14px 18px;font-weight:600;min-height:44px}
@@ -80,7 +80,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <main>
 <div class="wrap hero">
-  <h1>The Windows support toolbox<br>you start with one command.</h1>
+  <h1>The Windows support toolbox you start with one command.</h1>
   <p class="lead">Tools, app installs, tweaks and update policies in one dark / light window. Built for remote support in ScreenConnect Backstage, and works on any Windows PC.</p>
   <div class="cmd" id="cmdMain"><code>irm hype-it-za.github.io/it-toolkit | iex</code><button type="button" data-copy="irm hype-it-za.github.io/it-toolkit | iex">Copy</button></div>
   <p class="note">Paste into an <b>elevated PowerShell</b> window or the <b>Backstage PowerShell console</b>. It downloads the latest version to <code>C:\ProgramData\ITToolkit</code> and opens the toolkit. Run it again any time to update.</p>
@@ -126,14 +126,23 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section><div class="wrap">
   <h2>No window needed</h2>
   <p class="sub">Run tools, installs and tweaks from a script or ScreenConnect's Commands tab. The exit code is 1 if anything logged an error.</p>
-<pre class="block"><span class="c"># load once</span>
+<pre class="block"><span class="c"># Load once</span>
 $itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
 
-&amp; $itk -List                                       <span class="c"># everything you can run</span>
-&amp; $itk -Run 'Disk space', 'Safe cleanup'           <span class="c"># run tools</span>
-&amp; $itk -Install Google.Chrome, 7zip.7zip           <span class="c"># winget IDs or app names</span>
-&amp; $itk -Tweak 'Show file extensions'               <span class="c"># add -Undo to revert</span>
-&amp; $itk -HealthCheck                                <span class="c"># HTML report</span></pre>
+<span class="c"># Everything you can run</span>
+&amp; $itk -List
+
+<span class="c"># Run tools</span>
+&amp; $itk -Run 'Disk space', 'Safe cleanup'
+
+<span class="c"># Install apps (winget IDs or app names)</span>
+&amp; $itk -Install Google.Chrome, 7zip.7zip
+
+<span class="c"># Apply a tweak (add -Undo to revert)</span>
+&amp; $itk -Tweak 'Show file extensions'
+
+<span class="c"># Save an HTML health check report</span>
+&amp; $itk -HealthCheck</pre>
 </div></section>
 
 <section><div class="wrap">
