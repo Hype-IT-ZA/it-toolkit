@@ -13,15 +13,17 @@ A free, open-source Windows support toolbox with a dark / light GUI. It has ever
 Open an elevated PowerShell window, or the PowerShell console in ScreenConnect Backstage, and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex
+irm hype-it-za.github.io/it-toolkit | iex
 ```
+
+The long form also works: `irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex`
 
 This downloads the latest version to `C:\ProgramData\ITToolkit` and opens the GUI. Run it again to update. The toolkit also tells you when a new version is out.
 
 On an older machine (Windows 10 before 1809, or Server 2016) where the download fails with a TLS or SSL error, use this instead:
 
 ```powershell
-[Net.ServicePointManager]::SecurityProtocol = 'Tls12'; irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex
+[Net.ServicePointManager]::SecurityProtocol = 'Tls12'; irm https://hype-it-za.github.io/it-toolkit | iex
 ```
 
 > `irm | iex` runs code straight from the internet. Read [`install.ps1`](install.ps1) first if you don't maintain this repo.
@@ -93,7 +95,7 @@ WinUtil's buttons are here too. **O&O ShutUp10++** is under Tools → Software, 
 Pass options to run without the GUI. For ScreenConnect's **Commands** tab, start the command with `#!ps` and set a timeout, for example `#timeout=900000`.
 
 ```powershell
-$itk = [scriptblock]::Create((irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1))
+$itk = [scriptblock]::Create((irm hype-it-za.github.io/it-toolkit))
 
 & $itk -List                                           # everything you can run
 & $itk -Run 'Disk space', 'Safe cleanup'               # run tools

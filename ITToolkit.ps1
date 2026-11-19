@@ -12,7 +12,7 @@
 
 .EXAMPLE
     # GUI (latest version, from GitHub)
-    irm https://raw.githubusercontent.com/Hype-IT-ZA/it-toolkit/main/install.ps1 | iex
+    irm hype-it-za.github.io/it-toolkit | iex
 
 .EXAMPLE
     # Headless - no window, for ScreenConnect "Commands" or scripts
