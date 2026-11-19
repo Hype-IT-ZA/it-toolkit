@@ -2,7 +2,7 @@
 
 A free, open-source Windows support toolbox with a dark / light GUI. It has everything in Chris Titus Tech's WinUtil (all its apps and tweaks), plus a large set of tools built for **remote support**. It runs inside a **ScreenConnect Backstage** session (as SYSTEM, without Explorer) and on any Windows PC.
 
-- **Tools tab.** 120+ everyday IT tools: system, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, security, printers, power and reports.
+- **Tools tab.** 110+ everyday IT tools: system, network, disk and cleanup, repair, software, Office and Teams, the signed-in user's session, security, printers, power and reports.
 - **Install tab.** Tick apps from about 250 programs (every app in WinUtil, plus more) and install, upgrade or uninstall them silently with winget. Includes presets.
 - **Tweaks tab.** 75 tweaks covering every WinUtil tweak and preference toggle. A restore point is made first, every tweak shows whether it's applied, and almost all of them can be undone.
 - **Updates tab.** Windows Update policies (security-focused, stay on the current version, no driver updates) and update actions.
