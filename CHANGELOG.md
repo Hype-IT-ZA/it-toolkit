@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.2
+
+- Network tools, the health check and the status bar now work on PCs where Windows' own `Get-NetIPConfiguration` fails (adapters that show up twice, common with some VPN and Hyper-V setups).
+
 ## 2.3.1
 
 - Install tab: presets open from an **Add a preset** button and menu (shows how many apps each adds) instead of a drop-down.
